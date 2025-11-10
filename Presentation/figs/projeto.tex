@@ -1,0 +1,2084 @@
+\documentclass{beamer}
+
+% Choose a theme
+\usetheme{Madrid}
+
+% Include necessary packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{csquotes}
+\usepackage{tikz}
+\usepackage[style=abnt, language=portuguese]{biblatex}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{multimedia}
+\usepackage{upgreek}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[portuguese]{babel}
+\usepackage{etoolbox}
+
+\setlength{\intextsep}{0cm}
+
+% Define a custom tcolorbox style
+\newtcolorbox{chapterbox}{
+    enhanced,
+    colback=blue!5,
+    colframe=blue!80!black,
+    boxrule=2pt,
+    arc=15pt,
+    drop shadow south east,
+    width=0.8\textwidth,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt
+}
+
+
+
+% Customize the footline to show only the title, date, and page number
+\setbeamertemplate{footline}{%
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[wd=.66\paperwidth,ht=2.5ex,dp=1ex,left]{title in head/foot}%
+            \hspace*{2ex}\insertshorttitle%
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex,dp=1ex,right]{title in head/foot}%
+            Diego Dias Veloso \hspace*{5ex} \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+        \end{beamercolorbox}%
+    }%
+}
+
+% \small  \footnotesize  \scriptsize  \tiny
+\setbeamerfont{caption}{size=\tiny}
+
+
+
+% Remove navigation symbols if desired
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{background canvas}{
+    \begin{tikzpicture}[remember picture,overlay]
+        \fill[blue!10] (current page.south west) rectangle (current page.north east);
+    \end{tikzpicture}
+}
+
+
+\addbibresource{projeto.bib}
+
+\definecolor{lightblue}{rgb}{0.6, 0.85, 0.9}
+
+\begin{document}
+
+% Folha de rosto em inglês (FAPESP) feita manualmente
+\title{Análise de Sólidos Bidimensionais através do Método dos Elementos Finitos Posicional}
+\author{Diego Dias Veloso \\
+\and Prof. PhD. Humberto Breves Coda (Titular)}
+\institute{\large Disciplina: SET5884 - Introdução ao Método dos Elementos Finitos Posicional}
+\date{São Carlos, 2024}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Tópicos}
+    \tableofcontents
+\end{frame}
+
+
+
+% \begin{frame}{}
+
+%     \begin{block}{\Huge Metodologia}
+%     \end{block}
+    
+%     \begin{block}{\large \textbf{\textcite{Codá_2006}}}
+%         \textbf{Exemplo 4} : Instabilidade de Pilar sob compressão \\
+%         \textbf{Exemplo 5} : Viga Apoiada / Engastada
+%     \end{block}
+
+
+
+%     \begin{block}{\large \textbf{\textcite{kishino_2022}}}
+%         \textbf{Exemplo 1} : Viga Engastada
+%     \end{block}
+
+% \end{frame}
+\section{Metodologia}
+\begin{frame}{}
+    \frametitle{Metodologia}
+    \framesubtitle{Softwares utilizados}
+    \begin{center}
+        \begin{tikzpicture}[node distance=3cm]
+            \node[draw, rectangle, align=left, text width=4cm, label={[label distance=0.5cm]right:{\includegraphics[width=0.8cm]{./figs/acad.png}}}] (start) {
+                \textbf{AcadMesh}\\
+                - \small Modelagem \\
+                - \small Discretização
+            };
+            \node[draw, rectangle, align=left, text width=6cm, below of=start, label={[label distance=0.5cm]right:{\includegraphics[width=0.8cm]{./figs/fortran.png}}}] (fortran) {
+                \textbf{Fortran + SparseSET + OpenMP}\\
+                - \small Implementação
+            };
+            \node[draw, rectangle, align=left, text width=3.5cm, below left of=fortran, xshift=-0.5cm, yshift=-0.5cm, label={[label distance=0.5cm]left:{\includegraphics[width=0.8cm]{./figs/python.png}}}] (python) {
+                \textbf{Python}\\
+                - \small Pós processamento\\
+            };
+            \node[draw, rectangle, align=left, text width=3cm, below right of=fortran, xshift=0.5cm, yshift=-0.5cm, label={[label distance=0.5cm]right:{\includegraphics[width=0.8cm]{./figs/acad.png}}}] (cpp) {
+                \textbf{Acadview}\\
+                - \small Visualização
+            };
+
+            \draw [->, shorten >=2pt, shorten <=2pt] (start) -- (fortran);
+            \draw [->, shorten >=2pt, shorten <=2pt] (fortran) -- (python);
+            \draw [->, shorten >=2pt, shorten <=2pt] (fortran) -- (cpp);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\section{Desenvolvimento Teórico}
+\subsection{Equilíbrio}
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Equilíbrio}
+    \begin{itemize}
+        \item Princípio da \textbf{Estacionariedade da Energia Mecânica}:
+    \end{itemize}
+
+    \begin{equation}
+        \delta\varPi = \frac{\partial \varPi}{\partial \vec{Y}} \cdot \delta\vec{Y} = 0 \quad \Rightarrow \quad \delta\vec{Y} \quad \text{Arbitrário} \quad \Rightarrow \quad \frac{\partial \varPi}{\partial \vec{Y}} = 0
+    \end{equation}
+
+    \begin{itemize}
+        \item \textbf{Natureza do Equilíbrio} (Curvatura da superfície de \(\varPi\) ):
+    \end{itemize}
+
+    \begin{equation}
+        H_{ij} = \frac{\partial}{\partial \vec{Y}}\left(\frac{\partial \varPi}{\partial \vec{Y}}\right) = \frac{\partial^2 \varPi} {\partial\vec{Y} \otimes \partial\vec{Y}}
+    \end{equation}
+
+    \begin{columns}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \(H > 0\)
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \(H = 0\)
+        \end{itemize}
+
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \(H < 0\)
+        \end{itemize}
+    \end{columns}
+
+        \begin{figure}[!h]
+            \centering
+            \includegraphics[width=0.9\textwidth]{figs/equilíbrio.png}
+            \scriptsize {\caption{ Natureza do Equilíbrio}}
+        \end{figure}
+\end{frame}
+
+
+\subsection{Deformação}
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Deformação Não-Linear de Engenharia}
+
+        \begin{figure}[!h]
+            \centering
+            \includegraphics[width=0.4\textwidth]{figs/deformação.png}
+            \scriptsize \caption{ Deformação}
+        \end{figure}
+
+        \begin{equation}
+            d\vec{y} = \nabla (\vec{f}) \cdot d\vec{x} \quad \Rightarrow \quad   \frac{dy^2}{dx^2} = \vec{u} ^T \cdot A^T  A \cdot \vec{u}
+        \end{equation}
+
+        \begin{equation}
+            \left.
+            \begin{aligned}
+                \varepsilon_{uv} &= \frac{1}{2}\left[\frac{\pi}{2}-\cos^{-1}\left(\frac{\vec{u}^T A^T A \vec{v}}{\lambda_u\lambda_v}\right)\right] \\
+                \varepsilon_u &= \sqrt{\vec{u}^T A^T A \cdot \vec{u} } - 1  
+            \end{aligned}
+            \right\}
+            \quad \text{Não Objetiva}
+        \end{equation}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Deformação Quadrática ou de Green-Lagrange}
+
+        \begin{itemize}
+            \item \textbf{Relação entre \(\mathbf{A}\) e \(\vec{u}\):}
+        \end{itemize}
+
+        \begin{equation}
+            \vec{y} = \vec{x} + \vec{u} \quad \Rightarrow \quad \nabla \vec{y} = \nabla \vec{x} + \nabla \vec{u} \quad \Rightarrow \quad \mathbf{A} = \mathbf{I} + \nabla \vec{u}
+        \end{equation}
+
+        \begin{itemize}
+            \item \textbf{Deformação quadrática:}
+        \end{itemize}
+
+        \begin{equation}
+            \frac{dy^2 - dx^2}{dx^2} =  \vec{u}^T \cdot \left(\mathbf{A} ^T \mathbf{A}  - \mathbf{I}  \right) \cdot \vec{u} 
+        \end{equation}
+
+        \begin{equation}
+            \scalebox{1.0}{$
+            \mathbf{C}  := \mathbf{A} ^T \mathbf{A}  \quad \Rightarrow \quad \mathbf{E} = \frac{1}{2} \left(\mathbf{C}  - \mathbf{I} \right)
+            $}
+        \end{equation}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Deformação Volumétrica}
+
+        \begin{itemize}
+            \item \textbf{Mudança de volume:} \(d\upsilon = \left[\vec{F}_a , \vec{F}_b , \vec{F}_c\right]  \quad \text{e} \quad d\upsilon_R = \left[\vec{a} , \vec{b} , \vec{c}\right] \)
+        \end{itemize}
+
+        \begin{figure}[!h]
+            \centering
+            \includegraphics[width=0.5\textwidth]{figs/jacobiano.png}
+            \scriptsize \caption{ Deformação}
+        \end{figure}
+
+        \begin{equation}
+            d\upsilon = \det \mathbf{F} d\upsilon_R \quad \Rightarrow \quad d\upsilon = J d\upsilon_R
+        \end{equation}
+
+        \begin{itemize}
+            \item \textbf{Mudança de Área (Fórmula de Nanson):}
+        \end{itemize}
+
+        \begin{equation}
+            \vec{n}\cdot da = J \cdot \mathbf{A}^{-T} \vec{n}_R \cdot dA_R
+        \end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Tensões de Cauchy}
+
+        \begin{itemize}
+            \item \textbf{Lei de Cauchy:}
+        \end{itemize}
+
+ 
+
+        \begin{figure}[!h]
+            \centering
+            \includegraphics[width=0.55\textwidth]{figs/tensão_cauchy.png}
+            \scriptsize \caption{ Deformação}
+        \end{figure}
+
+        \begin{equation}
+            t (x,n) = \boldsymbol{\sigma}(x) \cdot n  \quad \Rightarrow \quad t_i = \sigma_{ij} n_j
+        \end{equation}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Equilíbrio}
+    \setlength{\columnsep}{0pt} % Reduce space between columns
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\textwidth]{figs/cauchy.png}
+            \scriptsize \caption{Deformação}
+        \end{figure}
+        \column{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.9\textwidth]{figs/eq_local.png}
+            \scriptsize \caption{Deformação}
+        \end{figure}
+    \end{columns}
+
+    \begin{itemize}
+        \item \textbf{Conservação de Momento Linear e Angular:}
+    \end{itemize}
+    \begin{columns}
+        \column{0.4\textwidth}
+        \begin{equation*}
+            \scalebox{0.9}{$
+            \int\limits_{\partial \mathcal{P}_t } \vec{t} da  + \int\limits_{ \mathcal{P}_t } \vec{b}  d\upsilon 
+            $}
+        \end{equation*}
+
+        \column{0.5\textwidth}
+        \begin{equation}
+            \scalebox{0.9}{$
+            \int\limits_{\partial \mathcal{P}_t } \left(\vec{r} \times \vec{t}\right) da  + \int\limits_{ \mathcal{P}_t } \left(\vec{r} \times \vec{b}\right) d\upsilon 
+        $}
+        \end{equation}
+    \end{columns}
+        
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Equilíbrio Local Euleriano}
+        \begin{itemize}
+            \item Para satisfazer o equilíbrio de momentos:
+        \end{itemize}
+
+        \begin{equation}
+            \int\limits_{A} \left(\vec{r} \times \vec{t}\right) da  + \int\limits_{\upsilon} \left(\vec{r} \times \vec{b}\right) d\upsilon  \quad \Rightarrow \quad \underbrace{\sigma_{ij} = \sigma_{ji}}_{\text{Teorema de Cauchy}}
+        \end{equation}
+        \begin{itemize}
+            \item Assim, para definir completamente o equilíbrio :
+        \end{itemize}
+
+        \begin{equation}
+             \vec{t} = \boldsymbol{\sigma} \cdot \vec{n} \quad \Rightarrow \quad \underbrace{\overbrace{\int\limits_{A} \left(\boldsymbol{\sigma} \cdot \vec{n}\right) da }^{\int\limits_{V} \left[div(\boldsymbol{\sigma})\right] d\upsilon} + \int\limits_{\upsilon} \vec{b}  d\upsilon = 0 }_{\text{Equilíbrio Global}}
+        \end{equation}
+        % \begin{itemize}
+        %     \item Aplica-se o teorema da divergência \(\int\limits_{A} \left(\boldsymbol{\sigma} \cdot \vec{n}\right) da = \int\limits_{V} \left[div(\boldsymbol{\sigma})\right] d\upsilon\)
+        % \end{itemize}
+        \begin{equation}
+            \int\limits_{V} \left[div(\boldsymbol{\sigma})\right] d\upsilon + \int\limits_{\upsilon} \vec{b}  d\upsilon = 0 \quad \Leftrightarrow  \quad \underbrace{\text{div} \boldsymbol{\sigma}  + \vec{b} = 0}_{\text{Equilíbrio Local}}
+        \end{equation}
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Equilíbrio Local Lagrangiano}
+        \begin{itemize}
+            \item Partindo do Equilíbrio global Euleriano: \(\int\limits_{A} \left(\boldsymbol{\boldsymbol{\sigma}} \cdot \vec{n}\right) da  + \int\limits_{\upsilon} \vec{b}  d\upsilon = 0\)
+        \end{itemize}
+
+        \begin{itemize}
+            \item Recorda-se que \(d\upsilon = J d\upsilon_R\) e que \(\vec{n}\cdot da = J \cdot \mathbf{A}^{-T} \vec{n}_R \cdot dA_R\)
+        \end{itemize}
+
+        \begin{equation}
+            \int\limits_{A_r} \left(\boldsymbol{\sigma} \cdot J \cdot \mathbf{A}^{-T} \vec{n}_R\right) da_R  + \int\limits_{\upsilon_R} \underbrace{\vec{b} J}_{=\vec{b^0}} d\upsilon_R  = 0 \quad \left(\text{Lagrangiano}\right)
+        \end{equation}
+
+        \begin{itemize}
+            \item 1º tensor de Piola: \(\mathbf{P}= J \mathbf{\boldsymbol{\sigma}}\cdot A^{-T} \quad \left(P_{ij} \neq P_{ji}\right)\):
+        \end{itemize}
+
+        \begin{equation}
+            \int\limits_{A_R} \left(\mathbf{P} \vec{n}_R\right) da_R  + \int\limits_{\upsilon_R} \vec{b^0} d\upsilon_R  = 0 \quad \left(\text{Forma Fraca}\right)
+        \end{equation}
+
+        \begin{equation}
+            \mathbf{P} \vec{n}_R + \vec{b^0} d\upsilon_R  = 0 \quad \left(\text{Forma Forte}\right)
+        \end{equation}
+
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Estacionariedade da Energia Mecânica Total $\varPi$} 
+
+        \begin{equation}
+            \delta \varPi = \int\limits_{\upsilon_0} \left(\mathbf{P} + b^0 -\rho^0 \ddot{y} \right) \delta\vec{Y} d\upsilon_0 = 0
+        \end{equation}
+
+        \begin{equation}
+            \scalebox{0.9}{$
+            \int\limits_{\upsilon_0} \rho^0\ddot{y_i}\delta Y_i d\upsilon_0 - \int\limits_{\upsilon_0} b_i^0\delta Y_i d\upsilon_0 - \int\limits_{A_0} p_i^0\delta Y_i dA_0 - F_i\delta Y_i + \int\limits_{\upsilon_0} P_{ji}\delta y_{i,j}dV_0 = 0
+            $}
+        \end{equation}
+        
+        \begin{itemize}
+            \item \(\delta Y_{i,j} = \delta A_{ij}\)
+        \end{itemize}
+
+                
+        \begin{itemize}
+            \item Tensor de Tensões de Piola-Kirchhoff de Segunda Espécie : \( P_{ji} = A_{ik}\cdot S_{kj} \) 
+        \end{itemize}
+
+        \begin{equation}
+            \scalebox{0.85}{$
+            \int\limits_{\upsilon_0} \rho_0\ddot{y_i}\delta Y_i d\upsilon_0 - \int\limits_{\upsilon_0} b_i^0\delta Y_i d\upsilon_0 - \int\limits_{A_0} p_i^0\delta Y_i dA_0 - F_i\delta Y_i + \int\limits_{\upsilon_0} \underbrace{A_{ik}\cdot S_{kj}\delta A_{ij}}_{\delta E : S}dV_0 = 0
+            $}
+        \end{equation}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Estacionariedade da Energia Mecânica Total $\varPi$} 
+
+        
+        \begin{itemize}
+            \item Finalmente, o equilíbrio Lagrangiano fica definido:
+        \end{itemize}
+
+        \begin{equation}
+            \scalebox{0.9}{$
+            \underbrace{
+            \int\limits_{\upsilon_0}\rho^0\ddot{y_i}\delta Y_i d\upsilon_0 
+            - \int\limits_{\upsilon_0}b_i^0\delta Y_i d\upsilon_0 
+            - \int\limits_{A_0}p_i^0\delta Y_i dA_0 - F_i\delta Y_i
+            }_{\text{Forças Externas}}
+            + \underbrace{
+            \int\limits_{\upsilon_0}S : \delta E d\upsilon_0
+            }_{\text{Forças Internas}} = 0
+            $}
+        \end{equation}
+
+        \begin{itemize}
+            \item Conjugados Energéticos: \( P^T = \frac{\partial u_e}{\partial A} \quad \text{e} \quad S = \frac{\partial u_e}{\partial E} \)
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Energia Específica de Deformação} 
+
+        \begin{itemize}
+            \item \textbf{Energia de Deformação Total \(U_e = \int\limits_{\upsilon_0}{u_e \upsilon_0}\):}
+            \item \textbf{Modelo Hiperelástico:} É aquele no qual a energia de deformação pode ser equacionada.
+            \item \textbf{Modelo Hiperelástico Completo:} 
+            \begin{itemize}
+                \item \(u_e(C=I)=u_e(E=0)=0\) (Condição de Normalidade)
+                \vspace{1cm} 
+                \item \(
+                    \left.
+                    \begin{aligned}
+                        u_e(J\rightarrow 0^+)=+\infty \\
+                        u_e(J\rightarrow +\infty)=+\infty
+                    \end{aligned}
+                    \right\}
+                    \text{Condição de Crescimento}
+                    \) 
+            \end{itemize}
+            \item \textbf{Modelo Constitutivo de Saint-Venant-Kirchhoff:}
+            \begin{itemize}
+                \item \(u_e = \frac{1}{2} E : \mathbb{C} : E  \quad \Rightarrow \quad \mathbb{C} = \frac{\partial^2 u_e}{\partial E \otimes \partial E}\)
+                \item \(S=\frac{\partial u_e}{\partial E} \quad \Rightarrow \quad S = E : \mathbb{C}\) 
+            \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Tensões}
+    \begin{itemize}
+        \item \textbf{Estado Plano de Tensões:}
+    \end{itemize}
+    \begin{equation}
+    S_{ij} = 
+    \dfrac{E}{1+\nu}
+    \begin{pmatrix}
+        \dfrac{1}{1-\nu} & \dfrac{\nu}{1-\nu} & 0 & 0\\
+        \dfrac{\nu}{1-\nu}& \dfrac{1}{1-\nu} & 0 & 0\\
+         0 & 0 & 1 & 0 \\
+         0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+    \cdot
+    \begin{pmatrix}
+        E_{11} \\
+        E_{22} \\
+        E_{12}  \\
+        E_{21}
+    \end{pmatrix}
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{Estado Plano de Deformações:}
+\end{itemize}
+\begin{equation}
+    S_{ij} = 
+    \dfrac{E}{1+\nu}
+    \begin{pmatrix}
+        \dfrac{1-\nu}{1-2\nu} & \dfrac{\nu}{1-2\nu} & 0 & 0\\
+        \dfrac{\nu}{1-2\nu} & \dfrac{1-\nu}{1-2\nu} & 0 & 0\\
+         0 & 0 & 1 & 0 \\
+         0 & 0 & 0 & 1 \\
+    \end{pmatrix}
+    \cdot
+    \begin{pmatrix}
+        E_{11} \\
+        E_{22} \\
+        E_{12}  \\
+        E_{21}
+    \end{pmatrix}
+\end{equation}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Discretização do Domínio} 
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figs/funcaoforma.png}
+            \caption{Polinômios de Lagrange}
+        \end{figure}
+    
+    \begin{itemize}
+        \item \textbf{Polinômios de Lagrange:}
+        \begin{itemize}
+            \item Domínio Contínio \(\rightarrow\) Domínio Discreto
+            \item Interpolação das Grandezas Nodais no Domínio Discreto
+        \end{itemize}
+    \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Integração Numérica} 
+
+        \begin{columns}
+
+            \column{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Partição da Unidade:}
+            \end{itemize}
+    
+            \begin{equation}
+                \sum_{i=1}^{n} \phi_i\left(\vec{\xi}\right) = 1
+            \end{equation}
+
+            \column{0.5\textwidth}
+            \begin{itemize}
+                \item Funções de Forma
+            \end{itemize}
+            \begin{equation}
+                \phi_i = \prod_{j=1,j\neq i}^{n} \frac{x-x_j}{x_i-x_j}
+            \end{equation}
+  
+            
+        \end{columns}
+
+
+
+
+        \begin{itemize}
+            \item \textbf{Integral em \(\vec{\xi}\) :}
+        \end{itemize}
+
+        \begin{equation}
+            \int\limits_{\Omega} f(\vec{x}) d\Omega = \int\limits_{\Omega} f\left(\vec{\xi}\right) J_0 d\vec{\xi}
+        \end{equation}
+
+        \begin{itemize}
+            \item \textbf{Domínio de base triangular:} Quadratura de Hammer
+        \end{itemize}
+
+        \begin{equation}
+            \int\limits_{\Omega} f\left(\vec{x}\right) d\Omega = \sum_{ih=1}^{nh} f\left(\vec{\xi}\right) J_0 w_{ih}
+        \end{equation}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Mapeamento} 
+
+        \begin{itemize}
+            \item \textbf{Mapeamento:} Coordenadas \(\vec{X}\) e \(\vec{Y}\) \(\underbrace{\Longleftrightarrow}_{\text{Jacobiana}}\) \(\vec{\xi}\)  
+        \end{itemize}
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.55\textwidth]{figs/mapeamento.png}
+            \caption{Mapeamento}
+        \end{figure}
+
+        \begin{equation}
+            A^0 = \frac{\partial \vec{f^0}}{\partial \vec{\xi}} = \frac{\partial \vec{\phi}}{\partial \vec{\xi}}\cdot \vec{X}
+        \end{equation}
+
+        \begin{equation}
+            A^1 = \frac{\partial \vec{f^1}}{\partial \vec{\xi}} = \frac{\partial \vec{\phi}}{\partial \vec{\xi}}\cdot \vec{Y}
+        \end{equation}
+
+        \begin{equation}
+            A = A^1 \cdot \left(A^0\right)^{-1}
+        \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Formulação Estática} 
+
+        \begin{itemize}
+            \item \textbf{Energia cinética nula:} \( \mathbb{K}=0 \quad \Rightarrow \quad \varPi = \mathbb{U} + \mathbb{P} + \mathbb{K} = \mathbb{U} + \mathbb{P} \) 
+        \end{itemize}
+
+        \begin{equation}
+            \delta \varPi = -\int\limits_{V_0} \left(b^0_i \delta y_i \right) dV^0 - \int\limits_{A_0} \left(p^0_i \delta y_i \right) dA^0 + \int\limits_{V_0} \left(S_{ij} \delta E_{ij} \right) dV^0 = 0
+        \end{equation}
+        \begin{equation}
+            \scalebox{0.9}{$
+            \delta y_i(\xi) = \phi_i(\xi) \delta Y_i \quad \text{e} \quad y_i(\xi) = \phi_i(\xi) Y_i \text{e} \quad p^0_i = \phi_i(\xi) P_i^0 \text{e} \quad b^0_i = \phi_i(\xi) B_i^0
+            $}
+        \end{equation}
+
+        \begin{itemize}
+            \item \textbf{Arbitrariedade de \(\delta Y_i\):}
+        \end{itemize}
+
+        \begin{equation}
+            \scalebox{0.95}{$
+            \underbrace{-B^m_i\int\limits_{V_0} \left(\phi^m \phi^\ell \right) dV^0 - Q^m_i\int\limits_{A_0} \left(\phi^m \phi^\ell \right) dA^0 - F^\ell_i}_{\text{Forças Externas}}  +\underbrace{\int\limits_{V_0} \left(S_{ij} \frac{\partial E_{ij}}{\partial Y^\ell_i} \right) dV^0}_{\text{Forças Internas}}  = 0
+            $}
+        \end{equation}
+
+        \begin{equation}
+            (F^{\ell}_i)^{ext} - (F^{\ell}_i)^{int} = 0 
+        \end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Forças Externas} 
+
+        \begin{itemize}
+            \item \textbf{Cargas de Volume:} 
+        \end{itemize}
+
+        \begin{equation}
+            (F^{\ell}_i)^{vol} = -B^m_i\int\limits_{V_0} \left(\phi^\ell \phi^m \right) dV^0 = \sum_{ih=1}^{nh} \left(B_i^m \phi^\ell \phi^m \right) J_0 w_{ih}
+        \end{equation}
+
+        \begin{itemize}
+            \item Matriz \(\left[\phi^\ell \phi^m\right]_{ij}\quad i,j\in\left[0 , n \right] , n = ngl \cdot npe\):
+        \end{itemize}
+
+        \begin{equation}
+            \phi^\ell \phi^m = 
+            \begin{pmatrix}
+                \phi_1 \phi_1 & 0 & \phi_1 \phi_2 & 0 & \phi_1 \phi_3 & 0  \\
+                0 & \phi_1 \phi_1 & 0 & \phi_1 \phi_2 & 0 & \phi_1 \phi_3  \\
+                \phi_2 \phi_1 & 0 & \phi_2 \phi_2 & 0 & \phi_2 \phi_3 & 0  \\
+                0 & \phi_2 \phi_1 & 0 & \phi_2 \phi_2 & 0 & \phi_2 \phi_3  \\
+                \phi_3 \phi_1 & 0 & \phi_3 \phi_2 & 0 & \phi_3 \phi_3 & 0  \\
+                0 & \phi_3 \phi_1 & 0 & \phi_3 \phi_2 & 0 & \phi_3 \phi_3  \\
+            \end{pmatrix}
+        \end{equation}
+
+        \begin{itemize}
+            \item \textbf{Cargas de Superfície:} (2D \(\Rightarrow \text{Linha}\) e 3D \(\Rightarrow \text{Área}\))
+            \begin{itemize}
+                \item Procedimento similar, porém com linhas de Cargas
+                \item Funções de Forma com uma dimensão a menos
+            \end{itemize} 
+        \end{itemize}
+
+\end{frame}
+
+\subsection{Determinação das Forças Internas}
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+        \framesubtitle{Forças Internas} 
+        \begin{itemize}
+            \item Recordando o equacionamento das forças internas:
+        \end{itemize}
+        \begin{equation}
+            \left(F^\ell_i\right)^{int} = 
+            \int\limits_{V^{el}} \left(\frac{\partial\Psi(Y_k^m)}{\partial E_{km}}\frac{\partial E_{km}}{\partial Y_i^\ell}\right) d\Omega 
+            = 
+            \int\limits_{V^{el}} \left(S_{km}\frac{\partial E_{km}}{\partial Y_i^\ell}\right) d\Omega
+        \end{equation}
+        
+        \begin{itemize}
+            \item Integrando Numéricamente e reescrevendo a derivada de \(\frac{\partial E_{km}}{\partial Y_i^\ell}\) em função da direção \(\alpha\) e nó \(\beta\):
+        \end{itemize}
+        
+        \begin{equation}
+            \left(F^\beta_\alpha\right)^{int}= \sum_{ih=1}^{nh} \left(S_{ij}\frac{\partial E_{ij}}{\partial Y_\alpha^\beta}\right) \vec{\xi}(ih) 
+        \end{equation}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Determinação das forças internas}
+    \begin{itemize}
+        \item Relembrando a definição de \(E_{ij}\):
+    \end{itemize}
+
+    \begin{equation}
+        \mathbf{E}  := \frac{1}{2} \left(\mathbf{A} ^T \mathbf{A} - \mathbf{I}\right)
+    \end{equation}
+
+    \begin{itemize}
+        \item Assim, \(\frac{\partial E_{ij}}{\partial Y_\alpha^\beta}\) assume a forma:
+    \end{itemize}
+
+
+    \begin{equation}
+        \scalebox{0.9}{$
+        DE_{\alpha\beta} =
+        \frac{1}{2} \left[
+        \left(A^0\right)^{-t} \left(DA_{\alpha\beta}\right)^t  A^1  \left(A^0\right)^{-1 }+\left(A^0\right)^{-t} \left(A^1\right)^t  DA_{\alpha\beta}  \left(A^0\right)^{-1}
+        \right]
+        $}
+    \end{equation}
+
+
+
+    \begin{equation}
+        DA^1_{1\beta} =
+        \begin{pmatrix}
+        \phi_{\beta,1} & \phi_{\beta,2} \\
+        0 & 0
+        \end{pmatrix}
+        \quad \text{,} \quad
+        DA^1_{2\beta} =
+        \begin{pmatrix}
+        0 & 0 \\
+        \phi_{\beta,1} & \phi_{\beta,2}
+        \end{pmatrix}
+    \end{equation}
+
+    \begin{itemize}
+        \item Ou seja: \( \left( \alpha \Rightarrow \text{direção} \quad , \quad \beta  \Rightarrow \text{Nó} \right)\)
+    \end{itemize}
+
+    \begin{equation}
+        DA^1_{\alpha\beta} =
+        \begin{pmatrix}
+        \frac{\partial \phi_{\beta}}{\partial\xi}(2-\alpha) & \frac{\partial \phi_{\beta}}{\partial\eta}(2-\alpha) \\
+        \frac{\partial \phi_{\beta}}{\partial\xi}(\alpha-1) & \frac{\partial \phi_{\beta}}{\partial\eta}(\alpha-1)
+        \end{pmatrix}
+    \end{equation}
+
+    % \begin{columns}
+    %     \column{0.5\textwidth}
+    %     \begin{itemize}
+    %         \item \(\alpha \Rightarrow\)  direção;
+    %     \end{itemize}
+    %     \column{0.5\textwidth}
+    %     \begin{itemize}
+    %         \item \(\beta \Rightarrow\)  nó;
+    %     \end{itemize}
+    % \end{columns}
+
+\end{frame}
+
+
+
+\subsection{Determinação da Hessiana}
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Determinação da Hessiana}
+    \begin{itemize}
+        \item \textbf{Hessiana:} Também denominada por \textit{Matriz de Rigidez Tangente}, é definida como:
+    \end{itemize}
+
+
+
+    \begin{equation}
+        \frac{\partial^2 U}{ \partial Y_\gamma^z   \partial Y_\alpha^\beta} 
+        = 
+        \frac{\partial \left(F_\alpha^\beta\right)^{int}}{\partial Y_\gamma^z}
+        =
+        \int\limits_{V^{el}} \frac{\partial}{\partial Y_\gamma^z}\left(\frac{\partial \Psi(Y_k^m)}{\partial E_{km}} \frac{\partial E_{km}}{\partial Y_\gamma^\beta} \right) dV^{el}_0
+    \end{equation}
+
+    \begin{equation}
+        H_{\alpha\beta\gamma z}^{el}
+        = 
+        \sum_{ih=1}^{nh} \underbrace{\left[h_{\alpha\beta\gamma z}\left(\vec{\xi(ih)}\right)\right] \vec{\xi}(ih)\omega_{ih}}_{\text{Domínio }\vec{\xi}} \underbrace{J_0 \left(\vec{\xi}(ih)\right)}_{\det \left[J\right]_0 = \det \mathbf{A}^0}
+    \end{equation}
+
+    \begin{itemize}
+        \item Onde:
+    \end{itemize}
+    
+    \begin{equation}
+        h_{\alpha\beta\gamma z} = 
+        \frac{\partial}{\partial Y_\gamma^z}\left(\frac{\partial \Psi(Y_k^m)}{\partial E_{km}} \frac{\partial E_{km}}{\partial Y_\gamma^\beta} \right)
+    \end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Determinação da Hessiana}
+
+    \begin{equation}
+        h_{\alpha\beta\gamma z} =
+        \frac{\partial}{\partial Y_\gamma^z} 
+        \underbrace{\left(\frac{\partial \Psi}{\partial E} :\frac{\partial E}{\partial Y_\gamma^\beta}\right) }_{\left(F_\gamma^\beta\right)^{int}}
+    \end{equation}
+
+    \begin{equation}
+        h_{\alpha\beta\gamma z} =
+        \frac{\partial E}{\partial Y_\gamma^\beta} :\underbrace{\frac{\partial^2 \Psi}{\partial E \otimes \partial E}}_{\mathbb{C} } : \frac{\partial E}{\partial Y_\alpha^\beta}
+        +
+        \underbrace{\frac{\partial \Psi}{\partial E }}_{\mathbf{S} } :\frac{\partial^2 E}{\partial Y_\gamma^z \partial Y^\beta_\alpha}
+    \end{equation}
+
+    \begin{equation}
+        h_{\alpha\beta\gamma z} =
+        \frac{\partial E}{\partial Y_\gamma^z} :\underbrace{\mathbb{C} : \frac{\partial E}{\partial Y_\alpha^\beta}}_{\frac{\partial S}{\partial Y_\alpha^\beta}}
+        +
+        \mathbf{S} :\frac{\partial^2 E}{\partial Y_\gamma^z \partial Y^\beta_\alpha}
+    \end{equation}
+
+    \begin{equation}
+        h_{\alpha\beta\gamma z} =
+        \frac{\partial E}{\partial Y_\gamma^z} :\frac{\partial S}{\partial Y_\alpha^\beta}
+        +
+        \mathbf{S} :\frac{\partial^2 E}{\partial Y_\gamma^z \partial Y^\beta_\alpha}
+    \end{equation}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Determinação da Hessiana}
+
+    \begin{itemize}
+        \item Desenvolvendo os termos \(\frac{\partial S}{\partial Y_\alpha^\beta}\) e \(\frac{\partial^2 E}{\partial Y_\gamma^z \partial Y^\beta_\alpha}\):
+    \end{itemize}
+
+    \begin{equation}
+        DS_{\alpha\beta} = \frac{\partial S}{\partial Y_\alpha^\beta} = \mathbb{C} : \underbrace{\frac{\partial E}{\partial Y_\alpha^\beta}}_{DE_{\alpha\beta} }  
+    \end{equation}
+
+
+    \begin{equation}
+        D2E_{\alpha\beta\gamma z} = \frac{\partial^2 E}{\partial Y_\gamma^z \partial Y^\beta_\alpha}  
+    \end{equation}
+
+    \begin{equation}
+        \scalebox{0.8}{$
+        D2E_{\alpha\beta\gamma z}
+        =
+        \frac{1}{2} \left[
+        \left(A^0\right)^{-t} \left(DA^1_{\alpha\beta}\right)^t \left(DA^1_{\gamma z}\right)  \left(A^0\right)^{-1 }
+        +\left(A^0\right)^{-t} \left(DA^1_{\gamma z}\right)\left(DA^1_{\alpha\beta}\right)^t  \left(A^0\right)^{-1}
+        \right]
+        $}
+    \end{equation}
+
+    \begin{equation}
+        h_{\alpha\beta\gamma z} = DE_{\gamma z} : DS_{\alpha\beta} + S : D2E_{\alpha\beta\gamma z}
+    \end{equation}
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Técnica de resolução}
+
+    \begin{equation}
+        \underbrace{\vec{g}}_{\text{Desbalanceamento Mecânico}} = \vec{F}_{\text{int}} - \vec{F}_{\text{ext}} 
+        \quad \Rightarrow \quad
+        \vec{g} = \dfrac{\partial \varPi}{\partial \vec{Y}}
+    \end{equation}
+
+    \begin{itemize}
+        \item Expansão em série de Taylor ao redor de \(\vec{Y}_0\) (Posição tentativa):
+    \end{itemize}
+
+    \begin{equation}
+        \vec{g}\underbrace{\left(\vec{Y}\right)}_{\text{Solução}} = \vec{g}\underbrace{\left(\vec{Y}_0\right)}_{\text{Tentativa}} + \underbrace{\left.\dfrac{\partial \vec{g}}{\partial \vec{Y}}\right|_{\vec{Y}_0}}_{\left.\frac{\partial^2\varPi }{\partial \vec{Y}^2}\right|_{\vec{Y}_0} = \mathbf{H}} \Delta \vec{Y} + \underbrace{\left.\dfrac{1}{2}\dfrac{\partial^2 \vec{g}}{\partial \vec{Y}^2}\right|_{\vec{Y_0}}\Delta \vec{Y}^2}_{\approx \vec{0}}
+    \end{equation}
+
+    \begin{equation}
+        \vec{g}\left(\vec{Y}\right)\approx \vec{0} 
+        \quad \Rightarrow \quad
+        \underbrace{\vec{g}\left(\vec{Y}_0\right) + \left.\mathbf{H}\right|_{\vec{Y}_0}\Delta \vec{Y} = \vec{0}}_{\text{Sistema Linear}}
+    \end{equation}
+
+    \begin{equation}
+        \Delta \vec{Y} = -\left[\left.\mathbf{H}\right|_{\vec{Y}_0}\right]^{-1}\vec{g}\left(\vec{Y}_0\right)  
+    \end{equation}
+
+
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+
+    \begin{algorithm}[H]
+        \caption{Pseudo-Algoritmo}
+        \begin{algorithmic}[1]
+            \footnotesize % Adjust font size here
+            \State{Primeira solução tentativa \( \vec{Y}^0 = \vec{X} \)}
+            \For{Load Steps}
+                \State{$\vec{F}^{ext} \gets \vec{F}^{ext} + \vec{\Delta F}^{ext}$ (\scriptsize{ Carregamento prescrito}) $\vec{Y} \gets \vec{Y} + \vec{\Delta Y}$ (\scriptsize{Posição prescrita})}
+                \While{$\mathrm{RES} > \mathrm{TOL}$}
+                    \For{each Element}
+                        \State Compute $\left[\vec{(F^\beta_\alpha)}_{\text{int}}\right]^{el}$ \quad e \quad $\left[\mathbf{H} _{\alpha\beta\gamma z}\right]_{el}$
+                    \EndFor
+
+                    \State $\left(\vec{F}_{int}\right)^{\text{global}} \gets \left(\vec{F}_{int}\right)^{\text{global}} + \left(\vec{F}_{int}\right)^{\text{el}}$ \quad  e \quad  $\mathbf{H}^{\text{global}} \gets \mathbf{H}^{\text{global}} + \mathbf{H}^{\text{el}}$
+                    \State $\vec{g} \gets  \vec{F}_{\text{int}} - \vec{F}_{\text{ext}}$
+                    \State Condições de contorno sobre $\mathbf{H}$ e $\vec{g}$ 
+                    \State $\mathbf{H} \cdot \vec{\Delta Y} = -\vec{g}$
+                    \State $\vec{Y} \gets \vec{Y} + \vec{\Delta Y}$
+                    \State $\mathrm{RES} = \dfrac{|\vec{\Delta Y}|}{|\vec{X}|}$
+                \EndWhile
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+        
+
+\end{frame}
+
+
+\subsection{Formulação Dinâmica}
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Formulação Dinâmica}
+
+    \begin{itemize}
+        \item Consideração de \(\mathbb{K} \quad \Rightarrow \quad \varPi = \mathbb{U} + \mathbb{P} + \mathbb{K}\)
+    \end{itemize}
+
+    \begin{equation}
+        \mathbb{K} = \frac{1}{2} \int\limits_{V_0} \left(\rho^0 \dot{y_i} \dot{y_i} \right) dV^0
+        \quad \Rightarrow \quad
+        \delta \mathbb{K} = \frac{\delta \mathbb{K}}{dt}\delta t = \overbrace{\int\limits_{V_0} \left(\rho^0 \ddot{y_i} \delta y_i \right) dV^0}^{\vec{F}^{inercial}}
+    \end{equation}
+
+    \begin{equation}
+        \delta \mathbb{K} = \int\limits_{V_0} \left(\rho^0 \phi_l \phi_\alpha \ddot{Y}_i^\alpha \right) dV^0 \delta Y_i^\ell
+    \end{equation}
+
+    \begin{itemize}
+        \item Equilíbrio : \(\delta \varPi = \frac{\partial \varPi}{\partial Y_i^\ell}\delta Y_i^\ell \)
+        \item Arbitrariedade de \(\delta Y_i^\ell \quad \Rightarrow \quad \delta \varPi = \frac{\partial \varPi}{\partial Y_i^\ell} = \frac{\partial \mathbb{U}}{\partial Y_i^\ell} + \frac{\partial \mathbb{P}}{\partial Y_i^\ell}  + \frac{\partial \mathbb{K}}{\partial Y_i^\ell} = 0 \)
+    \end{itemize}
+
+    \begin{equation}
+        \frac{\partial \mathbb{K}}{\partial Y_i^\ell} = \int\limits_{V_0} \left(\rho^0 \phi_l \phi_\alpha \ddot{Y}_i^\alpha \right) dV^0 
+        =
+        \mathbf{M} \vec{\ddot{Y}} 
+    \end{equation}
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Desenvolvimento Teórico}
+    \framesubtitle{Formulação Dinâmica}
+
+    \begin{itemize}
+        \item \textbf{Técnica de solução:} \textit{Newton-Raphson + Newmark}
+    \end{itemize}
+
+    \begin{equation}
+        \scalebox{0.95}{$
+        \vec{g} = \vec{F}_{\text{int}}\left(\vec{Y}\right) + \mathbf{M} \vec{\ddot{Y}} - \vec{F}_{\text{ext}}\left(\vec{Y}\right) = 0
+        \quad\text{,}\quad 
+        \mathbf{H}^{din} = \mathbf{H}^{est} + \dfrac{\mathbf{M}}{\gamma \Delta t^2} + \dfrac{\mathbf{C}}{\beta \Delta t}  
+        $}
+    \end{equation}
+
+    
+    \begin{itemize}
+        \item Consideração de amortecimento \(\mathbf{C}\) proporcional a matriz de massa \(\mathbf{M}\)
+        \item Integrador temporal de Newmark:
+    \end{itemize}
+
+    \begin{equation*}
+        \vec{Y}^{t+1} = \vec{Y}^{t} + \Delta t \vec{\dot{Y}}^{t} + \left[\left(\dfrac{1}{2}-\beta\right)\vec{\ddot{Y}}^t + \beta \vec{\ddot{Y}}^{t+1} \right] \Delta t^2
+    \end{equation*}
+    \begin{equation*}
+        \vec{\ddot{Y}}^{t+1} = \dfrac{\vec{Y}^{t+1}}{\beta \Delta t^2} - \vec{Q}^{t} 
+        \quad \text{e} \quad  
+        \vec{\dot{Y}}^{t+1} = \dfrac{\gamma}{\beta \Delta t} \vec{Y}^{t+1} + \vec{R}^{t} - \gamma \Delta t \vec{Q}^{t}
+    \end{equation*}
+
+    \begin{equation*}
+        \vec{Q}^{t} = \frac{\vec{Y}^t}{\beta \Delta t^2} + \frac{\vec{\dot{Y}}^t}{\beta \Delta t} + \left( \frac{1}{2\beta} - 1 \right) \vec{\ddot{Y}}^t \quad \text{e} \quad \vec{R}^{t} = \left(\vec{\dot{Y}}^t + \left(1-\gamma\right)\Delta t \vec{\ddot{Y}}^t\right)
+    \end{equation*}
+\end{frame}
+
+
+\begin{frame}
+
+    \begin{algorithm}[H]
+        \caption{Pseudo-Algoritmo}
+        \begin{algorithmic}[1]
+            \footnotesize % Adjust font size here
+            \State{Primeira solução tentativa \( \vec{Y}^0 = \vec{X} \quad , \quad  \vec{\dot{Y}}^0=\vec{0} \quad , \quad \vec{\ddot{Y}}^0=\vec{0}\)}
+            \For{Time Steps}
+                \State{$\vec{F}^{ext} \gets \vec{F}^{ext} + \vec{\Delta F}^{ext}$ (\scriptsize{ Carregamento prescrito}) $\vec{Y} \gets \vec{Y} + \vec{\Delta Y}$ (\scriptsize{Posição prescrita})}
+                \State{$\vec{Q}$ e $\vec{R}$}
+                \While{$\mathrm{RES} > \mathrm{TOL}$}
+                    \For{each Element}
+                        \State Compute $\left[\vec{(F^\beta_\alpha)}_{\text{int}}\right]^{el}$ \quad e \quad $\left[\mathbf{H} _{\alpha\beta\gamma z}\right]_{el}$
+                    \EndFor
+                    \State $\left(\vec{F}_{int}\right)^{\text{global}} \gets \left(\vec{F}_{int}\right)^{\text{global}} + \left(\vec{F}_{int}\right)^{\text{el}}$ \quad  e \quad  $\mathbf{H}^{\text{global}} \gets \mathbf{H}^{\text{global}} + \mathbf{H}^{\text{el}}$
+                    \State $\vec{g} \gets  \vec{F}_{\text{int}} - \vec{F}_{\text{ext}}$
+                    \State Condições de contorno sobre $\mathbf{H}$ e $\vec{g}$ 
+                    \State $\mathbf{H} \cdot \vec{\Delta Y} = -\vec{g}$
+                    \State $\vec{Y} \gets \vec{Y} + \vec{\Delta Y}$
+                    \State Atualizar: $\vec{\dot{Y}} \quad , \quad \vec{\ddot{Y}}$
+                    \State $\mathrm{RES} = \dfrac{|\vec{\Delta Y}|}{|\vec{X}|}$
+                \EndWhile
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+        
+
+\end{frame}
+
+
+% =================================================================================================%
+% =================================================================================================%
+\section{Resultados}
+\subsection{Validação do Código Estático}
+
+\begin{frame}{}
+
+    \begin{block}{\Huge Validação do Código Estático}
+    \end{block}
+    
+    \begin{block}{\large \textbf{\textcite{Codá_2006}}}
+        \textbf{Exemplo 4} : Instabilidade de Pilar sob compressão \\
+        \textbf{Exemplo 5} : Viga Apoiada / Engastada
+    \end{block}
+
+
+
+    \begin{block}{\large \textbf{\textcite{kishino_2022}}}
+        \textbf{Exemplo 1} : Viga Engastada
+    \end{block}
+
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 4 -- \textcite{Codá_2006}}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figs/Coda_4.png}
+    \caption{Instabilidade de Pilar sob compressão}
+\end{figure}
+\begin{columns}
+    \column{0.5\textwidth}
+    \begin{itemize}
+        \item \small \textbf{H:} 2 m 
+        \item \small \textbf{h:} 0,0663 m 
+        \item \small \textbf{b:} 1 m
+    \end{itemize}
+    \column{0.5\textwidth}
+    \begin{itemize}
+        \item \small \textbf{E:} \(210\cdot 10^{9} Pa\)
+        \item \small \(\boldsymbol{\nu:}\) 0.0
+    \end{itemize}
+\end{columns}
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 4 -- \textcite{Codá_2006}}
+    Resultados:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/Codá(3_5).png}
+    \caption{Deslocamento Horizontal}
+\end{figure}
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 1 -- \textcite{Codá_2006}}
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.6\textwidth]{figs/tumb_pilar.png}}{GUSTAVO3_5.mp4}
+        \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 5 -- \textcite{Codá_2006}}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{figs/Coda_5.png}
+    \caption{Viga Apoiada / Engastada}
+\end{figure}
+\begin{columns}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{L:} 100 cm 
+        \item \scriptsize \textbf{h:} 1,0 cm 
+        \item \scriptsize \textbf{b:} 1,0 cm
+    \end{itemize}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{E:} \(24\cdot 10^{3} \frac{kN}{cm^2}\)
+        \item \scriptsize \(\boldsymbol{\nu:}\) 0.0
+        \item \scriptsize \textbf{P:} 24 kN
+    \end{itemize}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Elementos :} 78 T10
+        \item \scriptsize \textbf{Passos :} 48
+        \item \scriptsize \textbf{Tolerância :} \(10^{-6}\)
+    \end{itemize}
+\end{columns}
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 5 -- \textcite{Codá_2006}}
+
+    Resultados:
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/Codá(3_6).png}
+        \caption{Deslocamento Horizontal do apoio e vertical do centro do vão}
+    \end{figure}
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 1 -- \textcite{Codá_2006}}
+
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/tumb_engas_engas.png}}{GUSTAVO3_6.mp4}
+        \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 1 -- \textcite{kishino_2022}}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\textwidth]{figs/Kishino_1.png}
+    \caption{Viga Engastada}
+\end{figure}
+
+\begin{columns}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{L:} 10 m 
+        \item \scriptsize \textbf{h:} 0,2 m 
+        \item \scriptsize \textbf{b:} 1,0 m
+    \end{itemize}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{E:} \(2,4\cdot 10^{6} \frac{kN}{m^2}\)
+        \item \scriptsize \(\boldsymbol{\nu:}\) 0.0
+        \item \scriptsize \textbf{P:} 160 kN
+    \end{itemize}
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Elementos :} 54 T10
+        \item \scriptsize \textbf{Passos :} 100
+        \item \scriptsize \textbf{Tolerância :} \(10^{-6}\)
+    \end{itemize}
+\end{columns}
+\end{frame}
+
+
+% ==================================================%
+\begin{frame}
+    \frametitle{Validação do Código Estático}
+    \framesubtitle{Exemplo 1 -- \textcite{kishino_2022}}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/KISHINO(8_1).png}
+        \caption{Deslocamento Horizontal e Vertical do Balanço}
+    \end{figure}
+\end{frame}
+
+% =======================================================================================%
+% =======================================================================================%
+\subsection{Validação do Código Dinâmico}
+\begin{frame}
+
+    \begin{block}{\Huge Validação do Código Dinâmico}
+    \end{block}
+    
+    \begin{block}{\large \textbf{\textcite{Codá_2006}}}
+        \textbf{Exemplo 2} : Viga Engastada - Carregamento Súbito  \\
+        \textbf{Exemplo 4} : Viga Engastada - Carregamento Crescente-Decrescente
+    \end{block}
+
+
+
+    \begin{block}{\large \textbf{\textcite{kishino_2022}}}
+        \textbf{Exemplo 1} : Viga Engastada - Carregamento Crescente-Constante
+    \end{block}
+
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 2 -- \textcite{Codá_2006}}
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/DIN_CODA_2.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_CODA_2_2.png} % second figure itself
+        \caption{Carregamento}
+    \end{minipage}
+        \hfill
+    \end{figure}
+    
+
+
+    \begin{columns}
+        \column{0.3 \textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{L =} 1,2 m 
+            \item \scriptsize \textbf{h =} 0,1856 m 
+            \item \scriptsize \textbf{b =} 1,0 m
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{E =} \(210\cdot 10^{9} Pa \)
+            \item \scriptsize \(\boldsymbol{\nu = }\) 0.0
+            \item \scriptsize $\rho = 1691.81 \frac{N \cdot s^2}{m^4}$
+            \item \scriptsize \textbf{P =} $5 \cdot 10^{6}$ N
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Elementos =} 78 T10
+            \item \scriptsize \textbf{$\Delta t = 2.5 \cdot 10^{-4}$ s}
+            \item \scriptsize \textbf{$t_{tot} = 10^{-6}$}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 2 -- \textcite{Codá_2006}}
+    Resultados
+    
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/(5_3)ConstantForce.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_CODA_2_res.png} % second figure itself
+        \caption{\textcite{Codá_2006}}
+    \end{minipage}
+        \hfill
+    \end{figure}
+
+\end{frame}
+
+
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 4 -- \textcite{Codá_2006}}
+    Resultados:
+
+
+
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/DIN_CODA_4_1.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_CODA_4_2.png} % second figure itself
+        \caption{Carregamento}
+    \end{minipage}
+        \hfill
+    \end{figure}
+
+    
+
+    \begin{columns}
+
+        \column{0.3\textwidth}
+
+        \begin{itemize}
+
+            \item \scriptsize \textbf{L =} 120 \textit{in} 
+
+            \item \scriptsize \textbf{h =} 10,627 \textit{in} 
+
+            \item \scriptsize \textbf{b =} 1,0 \textit{in}
+
+        \end{itemize}
+
+        \column{0.3\textwidth}
+
+        \begin{itemize}
+
+            \item \scriptsize \textbf{E =} $30\cdot 10^{3}\, \text{ksi}$
+
+            \item \scriptsize $\boldsymbol{\nu} = 0.0$
+
+            \item \scriptsize $\rho = 9.4116 \cdot 10^{-3} \frac{\text{lb}\cdot \text{s}^2}{\text{in}^4}$
+
+            \item \scriptsize \textbf{P =} $100 \cdot 10^{3}\, \text{lb}$
+
+        \end{itemize}
+
+        \column{0.3\textwidth}
+
+        \begin{itemize}
+
+            \item \scriptsize \textbf{Elementos =} 78 T10
+
+            \item \scriptsize $\Delta t = 1.125 \cdot 10^{-2}$ s
+
+            \item \scriptsize $t_{tot} = 2.5$ s
+
+        \end{itemize}
+    \end{columns}
+
+
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 4 -- \textcite{Codá_2006}}
+
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/(5_4)IncreasingDecreasingForce.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_CODA_4_res.png} % second figure itself
+        \caption{\textcite{Codá_2006}}
+    \end{minipage}
+        \hfill
+    \end{figure}
+
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 4 -- \textcite{Codá_2006}}
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/tumb.png}}{(5_4)IncreasingDecreasing.mp4}
+        \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 1 -- \textcite{kishino_2022}}
+    Resultados:
+
+
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/DIN_KISHINO_1.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_KISHINO_2.png} % second figure itself
+        \caption{Carregamento}
+    \end{minipage}
+        \hfill
+    \end{figure}
+
+
+    \begin{columns}
+        \column{0.3 \textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{L:} 120 in 
+            \item \scriptsize \textbf{h:} 10,627 in 
+            \item \scriptsize \textbf{b:} 1,0 in
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{E:} \(3,107 psi\)
+            \item \scriptsize \(\boldsymbol{\nu:}\) 0.0
+            \item \scriptsize \textbf{P:} 160 kN
+            \item \scriptsize \textbf{\(\boldsymbol{\rho:}\)} 0.0094116 \(\frac{lb \cdot s^2}{in^4}\)
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Elementos :} 54 T10
+            \item \scriptsize \textbf{Passos :} 100
+            \item \scriptsize \textbf{Tolerância :} \(10^{-6}\)
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 1 -- \textcite{kishino_2022}}
+        
+
+
+    \begin{figure}
+        \centering
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{figs/(5_4)IncreasingForce.png} % first figure itself
+        \caption{Viga Engastada}
+    \end{minipage}\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.7\textwidth]{figs/DIN_KISHINO_1_res.png} % second figure itself
+        \caption{\textcite{kishino_2022}}
+    \end{minipage}
+        \hfill
+    \end{figure}
+
+\end{frame}
+
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Código Dinâmico}
+    \framesubtitle{Exemplo 1 -- \textcite{kishino_2022}}
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/tumb.png}}{(5_4)IncreasingTo500.mp4}
+        \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+
+
+
+% =======================================================================================%
+% =======================================================================================%
+\section{Modelo de Dano - Phase-Field}
+\subsection{Formulação}
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+    \begin{itemize}
+        \item \textbf{Funcional de \Textcite{Griffith1921}}: 
+    \end{itemize}
+
+    \begin{equation}
+        \scalebox{0.9}{$
+        \varPi(\varepsilon,\varGamma) = \int\limits_{\Omega} \psi_0 dV + \underbrace{G_c\int\limits_{\varGamma}  dS}_{\text{Dissipação na fratura}}  -  \Pi_{ext}
+        $}
+    \end{equation}
+
+
+    \begin{columns}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item Regularização:
+        \end{itemize}
+
+        \column{0.7\textwidth}
+        \begin{figure}
+            \centering
+            \begin{minipage}{0.4\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{figs/phaseFieldParameterD.png}
+                \caption{Variável d}
+            \end{minipage}
+            \hfill
+            \begin{minipage}{0.4\textwidth}
+                \centering
+                \includegraphics[width=\linewidth]{figs/regularização.png}
+                \caption{Regularização}
+            \end{minipage}
+        \end{figure}
+    \end{columns}
+
+    \begin{equation}
+        \scalebox{0.85}{$
+        \varPi(\varepsilon,\varGamma) = \underbrace{\int\limits_{\Omega} \omega(d)\psi_0\left(\varepsilon\right) d\Omega}_{\text{Interna}} 
+                                    + \underbrace{G_c\int\limits_{\Omega} \left(w(d) + c_d|\nabla d|^2\right) d\Omega}_{\text{Dissipação}} 
+                                    - \underbrace{\Pi_{ext}}_{\text{Potêncial Externo}}
+        $}
+    \end{equation}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+    \begin{itemize}
+        \item \textbf{Função degradação da energia interna:} \(\omega = \left(1 - d\right)^2\)
+        \item \textbf{Funções definidoras da energia dissipada:}
+    \end{itemize}
+
+    \begin{columns}
+        \column{0.5\textwidth}
+        \[
+            w(d)
+            \left\{
+            \begin{aligned}
+                \frac{3}{8\ell_0}d \quad \text{Para o modelo AT1} \\
+                \frac{1}{2\ell_0}d^2 \quad \text{Para o modelo AT2}
+            \end{aligned}
+            \right.
+        \]
+        \column{0.5\textwidth}
+        \[
+            c_d
+            \left\{
+            \begin{aligned}
+                \frac{3}{8}\ell_0 \quad \text{Para o modelo AT1} \\
+                \frac{1}{2}\ell_0 \quad \text{Para o modelo AT2}
+            \end{aligned}
+            \right.
+        \]
+    \end{columns}
+
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+    \begin{itemize}
+        \item \textbf{Degradação assimétrica da energia:} 
+    \end{itemize}
+
+    \begin{equation}
+        \psi \left(\varepsilon, d\right) = \left(1 - d\right)^2\psi_0^+\left(\varepsilon\right)+\psi_0^-\left(\varepsilon\right)
+    \end{equation} 
+
+    \begin{equation}
+        \sigma_{ij} = \frac{\partial \psi}{\partial \varepsilon_{ij}} = \left(1 - d\right)^2\left(2\mu \varepsilon_{ij}^D+\kappa\varepsilon_{ij}^{\upsilon+}\mathbf{I} \right) + \kappa \varepsilon_{ij}^{\upsilon-}\mathbf{I}
+    \end{equation}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+        
+    \begin{itemize}
+        \item \textbf{Minimização do Funcional com relação a \(\vec{u}\)}: 
+    \end{itemize}
+
+    \begin{equation}
+        \delta_{\boldsymbol{u}} \varPi = \int\limits_{\Omega} \partial_{\boldsymbol{u}} \Psi\left(\varepsilon, d\right) \left[\delta \boldsymbol{u}\right]d\Omega - \int\limits_{\Omega} \left(\boldsymbol{f} \cdot \delta_{\boldsymbol{u}}\right) d\Omega - \boldsymbol{F} \cdot \delta_{\boldsymbol{u}} \quad.
+    \end{equation}
+
+
+    \begin{itemize}
+        \item \textbf{Minimização do Funcional com relação a \(d\)}: 
+    \end{itemize}
+
+    \begin{equation}
+        \delta_d \varPi = \int\limits_{\Omega} \partial_d \Psi\left(\varepsilon, d\right) \left[\delta d\right]d\Omega + \frac{G_c}{l_0}\int\limits_{\Omega} d\left(\delta d\right)+l^2_0 \nabla d \cdot \nabla \left(\delta d\right) d\Omega
+        \label{FunctionalVariation(d)}
+    \end{equation}
+
+    \begin{equation}
+        \underbrace{\delta_d \varPi \geqslant 0 \quad \forall \delta d \geqslant 0 \quad \text{onde} \quad \delta d = d^{t_i+1} - d^{t_i}}_{\text{Irreversibilidade}} .
+    \end{equation}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+    \begin{itemize}
+        \item \textbf{Escrevendo em forma incremental :}
+        \begin{itemize}
+            \item Expansão em série de Taylor em torno de \(d^{t_i}\) 
+        \end{itemize}
+    \end{itemize}
+
+    \begin{equation}
+        \scalebox{0.75}{$
+        \varPi (u_{t_i},d_{t_i}+\Delta d_{t_i+1}) = \varPi(u_{t_i},d_{t_i}) + \underbrace{\nabla_d \varPi |_{d_{t_i}} \Delta d_{t_i+1} + \Delta d^T_{t_i+1} \left[\frac{1}{2} \left(\nabla^2_{dd} \varPi\right)|_{d_{t_i}}\right] \Delta d_{t_i+1} }_{\text{Parcela a ser minimizada}}
+        $}
+    \end{equation}
+    \begin{itemize}
+        \item \textbf{Definindo:}:
+        \begin{itemize}
+            \item \(\mathbf{Q} = \nabla^2_{dd} \varPi\left(u_{t_i},d_n\right)\)
+            \item \(\vec{q} = \nabla_d \varPi\left(u_{t_i},d_n\right)\)
+        \end{itemize}
+        \item Reecreve-se \(\varPi\) do modo como \textcite{Marengo2021}
+    \end{itemize}
+
+    \begin{equation}
+        \varPi_{t_i} = \frac{1}{2} \Delta d^T_{t_i+1} \mathbf{Q} \Delta d_{t_i+1} + \vec{q} \Delta d_{t_i+1} + \varPi_{t_i}
+    \end{equation}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+    \begin{itemize}
+        \item \textbf{Definição de \(\mathbf{Q}\) e \(\vec{q}\)}:
+    \end{itemize}
+
+    \begin{equation}
+        \mathbf{Q} = \varPsi(u_{t_i}) + G_c \varPhi \qquad \text{e} \qquad \vec{q} = \mathbf{Q}\vec{d_{t_i}} - \boldsymbol{\varphi}(u_{t_i})
+    \end{equation}
+
+
+    \begin{equation}
+        \varPhi = \int\limits_{\Omega} \left(\ell_0^{-1}\mathbf{N}^T \mathbf{N} + \ell_0\mathbf{B}^T \mathbf{B}\right) d\Omega \quad \text{onde} \quad \mathbf{B} = \mathbf{J}_0^{-1}\frac{\partial \vec{\phi}}{\partial\vec{\xi }}
+    \end{equation}
+
+    \begin{equation}
+        \varPsi = \int\limits_{\Omega} \left(2\psi_0^+u_{t_i}\mathbf{N}^T \mathbf{N}\right) d\Omega
+    \end{equation}
+
+    \begin{equation}
+        \boldsymbol{\varphi} = \int\limits_{\Omega} \left(\psi_0^+u_{t_i}\mathbf{N}^T \right) d\Omega
+    \end{equation}
+
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Modelo de Dano}
+    \framesubtitle{Phase-Field}
+
+    \begin{itemize}
+        \item Finalmente, a solução do problema incremental se dá pela minimização \textbf{restrita} :
+    \end{itemize}
+
+    \begin{equation}
+        \Delta \boldsymbol{d} = \text{argmin}\left\{\frac{1}{2}\Delta \boldsymbol{d}^T \mathbf{Q} \Delta \boldsymbol{d} + \vec{q} \Delta \boldsymbol{d} \quad : \quad \Delta \boldsymbol{d} \geqslant 0 \right\}
+    \end{equation}
+
+    \begin{itemize}
+        \item Que pode ser reescrito :
+    \end{itemize}
+
+    \begin{equation}
+        \left(\mathbf{Q}\Delta\vec{d}+\vec{q}\right)^T\Delta\vec{d} = 0 \quad \text{e} \quad -\left(\mathbf{Q}\Delta \vec{d} +\vec{q}\right) \leqslant 0 \quad \text{e} \quad \Delta \vec{d} \geqslant 0
+    \end{equation}
+
+    \begin{itemize}
+        \item O problema é resolvido pelo algoritmo PSOR \Textcite{Marengo2021}
+    \end{itemize}
+
+\end{frame}
+
+% Include in your preamble
+
+
+\begin{frame}
+
+    \begin{algorithm}[H]
+        \caption{Pseudo-Algoritmo}
+        \begin{algorithmic}[1]
+            \footnotesize % Adjust font size here
+            \State{Primeira solução tentativa \( \vec{Y}^0 = \vec{X},\ \vec{d}^0=\vec{0}\)}
+            \For{Load Steps}
+                \State{$\vec{F}^{ext} \gets \vec{F}^{ext} + \Delta \vec{F}^{ext}$} \Comment{Carregamento prescrito}
+                \State{$\vec{Y} \gets \vec{Y} + \Delta \vec{Y}$} \Comment{Posição prescrita}
+                \While{$\mathrm{RES} > \mathrm{TOL}$}
+                    \State{$\delta_{\boldsymbol{u}}\, \varPi\left(u^i , d^i\right) = 0 \quad \rightarrow \quad u^i$}
+                    \State{$\delta_d\, \varPi\left(u^i , d^n\right) \geq 0  \quad \rightarrow \quad d^i$}
+                    \State{$\mathrm{RES} = \left| \vec{F}^{int}\left(u^i , d^i\right) \right|$}
+                \EndWhile
+                \State{$\left(u^{n+1} , d^{n+1} \right) \gets \left(u^{i} , d^{i} \right)$}
+            \EndFor
+        \end{algorithmic}
+    \end{algorithm}
+
+\end{frame}
+
+
+
+% ==============================================%
+\subsection{Validação do Phase-Field}
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{figs/ayrton.png} % first figure itself
+        \caption{Problema Analisado}
+    \end{figure}
+
+    \begin{columns}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{E:} \(210\cdot 10^{3} \frac{kN}{mm^2}\)
+            \item \scriptsize \(\boldsymbol{\nu:}\) 0.3
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{h:} 1 mm
+            \item \scriptsize \(\boldsymbol{\overline{u}}\) 0.006 mm 
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Passos:} 20
+            \item \scriptsize \textbf{\(G_c\)} : 2.7 \(\frac{kN}{mm^2}\)
+            \item \scriptsize \(\boldsymbol{\ell_0}\): 0.01mm
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.45\textwidth]{figs/Malha.png} % first figure itself
+        \caption{Discretização do Problema}
+    \end{figure}
+
+    \begin{columns}
+
+    \column{0.2\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Nós :} 4580 
+    \end{itemize}
+
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Elementos :} 9018 T3
+    \end{itemize}
+
+
+    \column{0.7\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Tol. Equilíbrio/Staggered :} \(10^{-6}  /  10^{-4}\) 
+    \end{itemize}
+
+    \end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figs/fint.png} % first figure itself
+        \caption{Força de Reação}
+    \end{figure}
+
+\end{frame}
+
+% ==============================================%
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+
+    \begin{figure}
+    \centering
+    \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/phase_tumb.png}}{PHASEVIDEO.mp4}
+    \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+    
+
+    \begin{figure}
+        \centering
+    \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/phase_tumb_zoom.png}}{PHASEVIDEO_ZOOM.mp4}
+    \caption{Vídeo}
+    \end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.4\textwidth]{figs/ayrton2.png} % first figure itself
+        \caption{Problema Analisado}
+    \end{figure}
+
+    \begin{columns}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{E:} \(210\cdot 10^{3} \frac{kN}{mm^2}\)
+            \item \scriptsize \(\boldsymbol{\nu:}\) 0.3
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{h:} 1 mm
+            \item \scriptsize \(\boldsymbol{\overline{u}}\) 0.006 mm 
+        \end{itemize}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Passos:} 20
+            \item \scriptsize \textbf{\(G_c\)} : 2.7 \(\frac{kN}{mm^2}\)
+            \item \scriptsize \(\boldsymbol{\ell_0}\): 0.01mm
+        \end{itemize}
+    \end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.45\textwidth]{figs/sen2_malha.png} % first figure itself
+        \caption{Discretização do Problema}
+    \end{figure}
+
+    \begin{columns}
+
+    \column{0.2\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Nós :} 16232
+    \end{itemize}
+
+    \column{0.3\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Elementos :} 32357 T3
+    \end{itemize}
+
+
+    \column{0.7\textwidth}
+    \begin{itemize}
+        \item \scriptsize \textbf{Tol. Equilíbrio/Staggered :} \(10^{-6}  /  10^{-4}\) 
+    \end{itemize}
+
+    \end{columns}
+
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+        
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{figs/fint_sen2.png} % first figure itself
+        \caption{Força de Reação}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+        
+
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.6\textwidth]{figs/sen2_tumb.png} % first figure itself
+            \caption{Degradação simétrica}
+        \end{figure}
+        \column{0.6\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.5\textwidth]{figs/sen2_split.png} % first figure itself
+            \caption{Degradação assimétrica}
+        \end{figure}
+
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.5\textwidth]{figs/sen2_split.png}}{PHASEVIDEO_split_zoom.mp4}
+        \caption{Vídeo}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{\textcite{Ferreira2024}}
+
+    \begin{itemize}
+        \item \textbf{Degradação assimétrica} : Dissipação apenas sob tração
+    \end{itemize}
+
+    \begin{columns}
+        \column{0.7\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.4\textwidth]{figs/Lshaped_malha.png} % first figure itself
+            \caption{Discretização do Problema}
+        \end{figure}
+        \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{E} : \(25.85 GPa\)
+            \item \scriptsize \(\boldsymbol{\nu:}\) 0.18
+            \item \scriptsize \textbf{\(G_c\)} : 0.095 \(\frac{N}{mm}\)
+            \item \scriptsize \(\boldsymbol{\ell_0}\): 5.0 mm
+        \end{itemize}
+    \end{columns}
+
+
+    \begin{columns}
+    \column{0.2\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Nós :} 21212
+        \end{itemize}
+    \column{0.3\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Elementos :} 42106 T3
+        \end{itemize}
+    \column{0.7\textwidth}
+        \begin{itemize}
+            \item \scriptsize \textbf{Tol. Equilíbrio/Staggered :} \(10^{-6}  /  10^{-4}\) 
+        \end{itemize}
+    \end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.8\textwidth]{figs/Lshaped.png} % first figure itself
+            \caption{Dano}
+        \end{figure}
+        \column{0.6\textwidth}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.7\textwidth]{figs/res_Lshaped.png} % first figure itself
+            \caption{Reação vertical}
+        \end{figure}
+
+    \end{columns}
+
+
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Validação do Phase-Field}
+    \framesubtitle{Resultados da Análise}
+    \begin{figure}
+        \centering
+        \movie[externalviewer]{\includegraphics[width=0.8\textwidth]{figs/Lshaped.png}}{Lshaped.mp4}
+        \caption{Vídeo}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}[allowframebreaks]{Referências}
+    \nocite{*}
+    \printbibliography
+\end{frame}
+
+\end{document}

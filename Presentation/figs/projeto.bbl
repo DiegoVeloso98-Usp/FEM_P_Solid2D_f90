@@ -1,0 +1,405 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{anand_continuum_2020}{book}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=0ade93efffef811d00676da93f97567b}{%
+           family={Anand},
+           familyi={A\bibinitperiod},
+           given={Lallit},
+           giveni={L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=77206d7127686c8358dd9f75d7b1f9db}{%
+           family={Govindjee},
+           familyi={G\bibinitperiod},
+           given={Sanjay},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {en}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University PressOxford}%
+      }
+      \strng{namehash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{fullhash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{fullhashraw}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{bibnamehash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{authorbibnamehash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{authornamehash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{authorfullhash}{16d1b275b8cee1c4f15bb638e6005186}
+      \strng{authorfullhashraw}{16d1b275b8cee1c4f15bb638e6005186}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Abstract Continuum mechanics of Solids presents a unified treatment of the major concepts in Solid Mechanics for beginning graduate students in the many branches of engineering. The fundamental topics of kinematics in finite and infinitesimal deformation, mechanical and thermodynamic balances plus entropy imbalance in the small strain setting are covered as they apply to all solids. The major material models of Elasticity, Viscoelasticity, and Plasticity are detailed and models for Fracture and Fatigue are discussed. In addition to these topics in Solid Mechanics, because of the growing need for engineering students to have a knowledge of the coupled multi-physics response of materials in modern technologies related to the environment and energy, the book also includes chapters on Thermoelasticity, Chemoelasticity, Poroelasticity, and Piezoelectricity. A preview to the theory of finite elasticity and elastomeric materials is also given. Throughout, example computations are presented to highlight how the developed theories may be applied.}
+      \field{edition}{1}
+      \field{isbn}{978-0-19-886472-1 978-0-19-189676-7}
+      \field{month}{7}
+      \field{title}{Continuum {Mechanics} of {Solids}}
+      \field{urlday}{30}
+      \field{urlmonth}{9}
+      \field{urlyear}{2024}
+      \field{year}{2020}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{doi}
+      \verb 10.1093/oso/9780198864721.001.0001
+      \endverb
+      \verb{file}
+      \verb PDF:C\:\\Users\\diegoveloso\\Zotero\\storage\\KDG6VN84\\Anand e Govindjee - 2020 - Continuum Mechanics of Solids.pdf:application/pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://academic.oup.com/book/43650
+      \endverb
+      \verb{url}
+      \verb https://academic.oup.com/book/43650
+      \endverb
+    \endentry
+    \entry{Ferreira2024}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=c0ba469bf855e95a34998e270a989a92}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={A\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=86d3c7e3f1468543795a4e6cd0a351ac}{%
+           family={Marengo},
+           familyi={M\bibinitperiod},
+           given={A},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=689e57b05e9954ef76a3df7ce0ff152c}{%
+           family={Perego},
+           familyi={P\bibinitperiod},
+           given={U},
+           giveni={U\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{fullhash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{fullhashraw}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{bibnamehash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{authorbibnamehash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{authornamehash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{authorfullhash}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \strng{authorfullhashraw}{0671fba7dd2716f3b1938f0defa8ec4a}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Despite the attention devoted to phase-field modeling of brittle fracture in the last 20 years, there are still some open issues. Among these, the search for a physically reasonable and computationally feasible criterion to split the energy density into parcels that may or may not contribute to crack propagation has been the subject of many recent studies. Within this context, we propose an energy split -- or energy decomposition -- with the aim of representing as accurately as possible the mechanical behavior of a crack under cyclic loading. To this purpose, two key assumptions are made. The first one is the interpretation of the gradient damage direction as being equivalent to the normal-to-crack direction, as already known by the literature. The second assumption is to consider the sign of the projection of the strain tensor on the normal-to-crack directions at a point as an indicator of whether this point should behave as an open or as a closed crack. We associate the latter case to both (a) a complete recovery of elastic energy density and (b) a zero driving force at such point. The first case is treated classically as a damageable material point at which the crack is free to propagate. Four examples are presented in order to assess the suitability of the present model by using both AT1 and AT2 regularization models. Results show the desired effect of limiting crack propagation to tension as well as of recovering its intact stiffness upon load reversal, even when the two most known energy splits fail to. Finally, the simplicity and effectiveness of our approach may pave the way to more sophisticated idealizations and to complex large-scale applications.}
+      \field{journaltitle}{(under revision)}
+      \field{title}{A Phase-Field Gradient-Based Energy Split for Modeling of Brittle Fracture under Cyclic Loading}
+      \field{year}{2024}
+    \endentry
+    \entry{Griffith1921}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=1f27bf15fe3f31f9ba44d14e270f22be}{%
+           family={Griffith},
+           familyi={G\bibinitperiod},
+           given={Alan\bibnamedelima Arnold},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=afcf5e4a27132f07402e4fc8ca150a6e}{%
+           family={Taylor},
+           familyi={T\bibinitperiod},
+           given={Geoffrey\bibnamedelima Ingram},
+           giveni={G\bibinitperiod\bibinitdelim I\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Royal Society}%
+      }
+      \strng{namehash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{fullhash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{fullhashraw}{929c3b8e978498a2fc57576440e9195d}
+      \strng{bibnamehash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{authorbibnamehash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{authornamehash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{authorfullhash}{929c3b8e978498a2fc57576440e9195d}
+      \strng{authorfullhashraw}{929c3b8e978498a2fc57576440e9195d}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In the course of an investigation of the effect of surface scratches on the mechanical strength of solids, some general conclusions were reached which appear to have a direct bearing on the problem of rupture, from an engineering standpoint, and also on the larger question of the nature of intermolecular cohesion. The original object of the work, which was carried out at the Royal Aircraft Estab\-lishment, was the discovery of the effect of surface treatment---such as, for instance, filing, grinding or polishing---on the strength of metallic machine parts subjected to alternating or repeated loads. In the case of steel, and some other metals in common use, the results of fatigue tests indicated that the range of alternating stress which could be permanently sustained by the material was smaller than the range within which it was sensibly elastic, after being subjected to a great number of reversals. Hence it was inferred that the safe range of loading of a part, having a scratched or grooved surface of a given type, should be capable of estimation with the help of one of the two hypotheses of rupture commonly used for solids which are elastic to fracture. According to these hypotheses rupture may be expected if (a) the maximum tensile stress, (b) the maximum extension, exceeds a certain critical value. Moreover, as the behaviour of the materials under consideration, within the safe range of alternating stress, shows very little departure from Hooke's law, it was thought that the necessary stress and strain calculations could be performed by means of the mathematical theory of elasticity.}
+      \field{journaltitle}{Philosophical Transactions of the Royal Society of London. Series A, Containing Papers of a Mathematical or Physical Character}
+      \field{number}{582-593}
+      \field{title}{{{VI}}. {{The}} Phenomena of Rupture and Flow in Solids}
+      \field{volume}{221}
+      \field{year}{1921}
+      \field{pages}{163\bibrangedash 198}
+      \range{pages}{36}
+      \verb{urlraw}
+      \verb doi:10.1098/rsta.1921.0006
+      \endverb
+      \verb{url}
+      \verb doi:10.1098/rsta.1921.0006
+      \endverb
+    \endentry
+    \entry{kishino_2022}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=6fe42c9265a771bea129d805fea8772f}{%
+           family={Kishino},
+           familyi={K\bibinitperiod},
+           given={Renato\bibnamedelima Takeo},
+           giveni={R\bibinitperiod\bibinitdelim T\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Universidade de São Paulo}%
+      }
+      \list{language}{1}{%
+        {pt}%
+      }
+      \list{location}{1}{%
+        {São Carlos}%
+      }
+      \strng{namehash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{fullhash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{fullhashraw}{6fe42c9265a771bea129d805fea8772f}
+      \strng{bibnamehash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{authorbibnamehash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{authornamehash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{authorfullhash}{6fe42c9265a771bea129d805fea8772f}
+      \strng{authorfullhashraw}{6fe42c9265a771bea129d805fea8772f}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{bookpagination}{sheet}
+      \field{month}{3}
+      \field{title}{Uso da decomposição multiplicativa de {Flory} na análise de sólidos viscoelastoplásticos e fluidos altamente viscosos}
+      \field{type}{Mestrado em {Estruturas}}
+      \field{urlday}{4}
+      \field{urlmonth}{12}
+      \field{urlyear}{2024}
+      \field{year}{2022}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.11606/D.18.2022.tde-29042022-092405
+      \endverb
+      \verb{file}
+      \verb PDF:C\:\\Users\\diegoveloso\\Zotero\\storage\\PYCQVQAY\\Kishino - 2022 - Uso da decomposição multiplicativa de Flory na análise de sólidos viscoelastoplásticos e fluidos alt.pdf:application/pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://www.teses.usp.br/teses/disponiveis/18/18134/tde-29042022-092405/
+      \endverb
+      \verb{url}
+      \verb https://www.teses.usp.br/teses/disponiveis/18/18134/tde-29042022-092405/
+      \endverb
+    \endentry
+    \entry{Marengo2021}{article}{}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=a68d8959ec7bb92a6054e7601ad7fa82}{%
+           family={Marengo},
+           familyi={M\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6f0645181576fe2beae09d4c565de447}{%
+           family={Patton},
+           familyi={P\bibinitperiod},
+           given={Alessia},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0f16b299409e285e906d16569d6b44af}{%
+           family={Negri},
+           familyi={N\bibinitperiod},
+           given={Matteo},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=5fcb2c22af8222e03c9c7430dbeb00d1}{%
+           family={Perego},
+           familyi={P\bibinitperiod},
+           given={Umberto},
+           giveni={U\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=bb78fe7ad27b63ee878f353690851f63}{%
+           family={Reali},
+           familyi={R\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {en}%
+      }
+      \strng{namehash}{5b8ebd6f80ffb8f1b00a44a55e3fe3d8}
+      \strng{fullhash}{af99a8fc78cd0d4f5d89634f7cd1cf2d}
+      \strng{fullhashraw}{af99a8fc78cd0d4f5d89634f7cd1cf2d}
+      \strng{bibnamehash}{5b8ebd6f80ffb8f1b00a44a55e3fe3d8}
+      \strng{authorbibnamehash}{5b8ebd6f80ffb8f1b00a44a55e3fe3d8}
+      \strng{authornamehash}{5b8ebd6f80ffb8f1b00a44a55e3fe3d8}
+      \strng{authorfullhash}{af99a8fc78cd0d4f5d89634f7cd1cf2d}
+      \strng{authorfullhashraw}{af99a8fc78cd0d4f5d89634f7cd1cf2d}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In the present work, a computationally efficient and explicit algorithm for the rigorous enforcement of the irreversibility constraint in the phase-field modeling of brittle fracture is presented. The proposed approach is staggered and relies on the alternate minimization of the total energy functional. The phase-field evolution turns out to be governed by a complementarity boundary-value problem, where the complementarity stems from the irreversibility, while the boundary-value problem is originated by the presence of the gradient term in the phase-field functional. Several different techniques have been proposed in the literature to account for damage irreversibility in a computationally effective way. Following a similar approach proposed in the past for a gradient-plasticity problem, a particularly simple and effective solution strategy based on the Projected Successive Over-Relaxation (PSOR) method for constrained optimization, where an iterative explicit scheme is used for the solution of symmetric linear complementarity problems, is presented. Even though the proposed method is restricted to linear complementarity problems, it can be applied to the numerical simulation of a wide range of problems discussed in the literature. The performance of the suggested solution algorithm on a number of test cases is compared with that of a recently proposed penalty approach for the approximated enforcement of irreversibility.}
+      \field{issn}{00457825}
+      \field{journaltitle}{Computer Methods in Applied Mechanics and Engineering}
+      \field{month}{12}
+      \field{title}{A rigorous and efficient explicit algorithm for irreversibility enforcement in phase-field finite element modeling of brittle crack propagation}
+      \field{urlday}{2}
+      \field{urlmonth}{10}
+      \field{urlyear}{2024}
+      \field{year}{2021}
+      \field{urldateera}{ce}
+      \field{pages}{114137}
+      \range{pages}{1}
+      \verb{urlraw}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0045782521004680
+      \endverb
+      \verb{url}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0045782521004680
+      \endverb
+    \endentry
+    \entry{Codá_2006}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=b8606f1bec9b2acf70dab15cd7d7e3e8}{%
+           family={Marques},
+           familyi={M\bibinitperiod},
+           given={Gustavo\bibnamedelimb Codá\bibnamedelimb Dos\bibnamedelimb Santos\bibnamedelima Cavalcanti},
+           giveni={G\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{institution}{1}{%
+        {Universidade de São Paulo}%
+      }
+      \list{language}{1}{%
+        {pt}%
+      }
+      \list{location}{1}{%
+        {São Carlos}%
+      }
+      \strng{namehash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{fullhash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{fullhashraw}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{bibnamehash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{authorbibnamehash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{authornamehash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{authorfullhash}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \strng{authorfullhashraw}{b8606f1bec9b2acf70dab15cd7d7e3e8}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Marques, G. C. S. C. (2006). Study and development of computational code based on the finite element method to dynamic geometrically nonlinear analysis of bidimensional solids. M.Sc. Dissertation – Escola de Engenharia de São Carlos, Universidade de São Paulo, São Carlos, 2006.}
+      \field{bookpagination}{sheet}
+      \field{month}{4}
+      \field{title}{Estudo e desenvolvimento de código computacional baseado no método dos elementos finitos para análise dinâmica não linear geométrica de sólidos bidimensionais}
+      \field{type}{Mestrado em {Estruturas}}
+      \field{urlday}{4}
+      \field{urlmonth}{12}
+      \field{urlyear}{2024}
+      \field{year}{2006}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.11606/D.18.2006.tde-22062006-104749
+      \endverb
+      \verb{file}
+      \verb PDF:C\:\\Users\\diegoveloso\\Zotero\\storage\\WQ5MBQ5U\\Marques - 2006 - Estudo e desenvolvimento de código computacional baseado no método dos elementos finitos para anális.pdf:application/pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://www.teses.usp.br/teses/disponiveis/18/18134/tde-22062006-104749/
+      \endverb
+      \verb{url}
+      \verb http://www.teses.usp.br/teses/disponiveis/18/18134/tde-22062006-104749/
+      \endverb
+    \endentry
+    \entry{codaPosicional}{book}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=39b6d62abcb928c41a2cc3dee60bd529}{%
+           family={{Universidade de São Paulo. Escola de Engenharia de São Carlos}},
+           familyi={U\bibinitperiod}}}%
+        {{un=0,uniquepart=base,hash=54ab9c5326139d846a530404c719aede}{%
+           family={Coda},
+           familyi={C\bibinitperiod},
+           given={Humberto\bibnamedelima Breves},
+           giveni={H\bibinitperiod\bibinitdelim B\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{language}{1}{%
+        {pt}%
+      }
+      \list{publisher}{1}{%
+        {Universidade de São Paulo. Escola de Engenharia de São Carlos}%
+      }
+      \strng{namehash}{783be04d33d1df696f3784ea5808becc}
+      \strng{fullhash}{783be04d33d1df696f3784ea5808becc}
+      \strng{fullhashraw}{783be04d33d1df696f3784ea5808becc}
+      \strng{bibnamehash}{783be04d33d1df696f3784ea5808becc}
+      \strng{authorbibnamehash}{783be04d33d1df696f3784ea5808becc}
+      \strng{authornamehash}{783be04d33d1df696f3784ea5808becc}
+      \strng{authorfullhash}{783be04d33d1df696f3784ea5808becc}
+      \strng{authorfullhashraw}{783be04d33d1df696f3784ea5808becc}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Este livro é dedicado a alunos de pós-graduação em engenharia de estruturas, visando proporcionar subsídios ao desenvolvimento de códigos computacionais para a análise não linear geométrica (estática ou dinâmica) de estruturas e sólidos através do método dos elementos finitos baseado em posições. Para esta finalidade é necessário cobrir um conjunto muito amplo de conhecimentos, incluindo a definição de análise não linear geométrica exata de estruturas, sua relação com princípios energéticos, a cinemática dos corpos deformáveis, o conceito de medidas de deformação objetivas, as relações constitutivas hiperelásticas e os diversos tipos de elementos finitos e suas aproximações cinemáticas. Conhecimentos relacionados à mecânica do contínuo serão necessários e, em alguns pontos, revisitados. Acredita-se que ao final dos estudos os alunos estarão livres das amarras da linearidade, pois a apresentação do conteúdo pretende mudar a história de sua formação, libertando-o o máximo possível dos condicionamentos dos cursos de graduação de nosso tempo.}
+      \field{isbn}{978-85-8023-068-0}
+      \field{month}{11}
+      \field{shorttitle}{O método dos elementos finitos posicional}
+      \field{title}{O método dos elementos finitos posicional: sólidos e estruturas - não linearidade geométrica e dinâmica}
+      \field{urlday}{16}
+      \field{urlmonth}{12}
+      \field{urlyear}{2024}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{doi}
+      \verb 10.11606/9788580230680
+      \endverb
+      \verb{file}
+      \verb PDF:C\:\\Users\\diegoveloso\\Zotero\\storage\\Q3DDK8DT\\Universidade de São Paulo. Escola de Engenharia de São Carlos e Coda - 2018 - O método dos elementos finitos posicional sólidos e estruturas - não linearidade geométrica e dinâm.pdf:application/pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://www.livrosabertos.abcd.usp.br/portaldelivrosUSP/catalog/book/1274
+      \endverb
+      \verb{url}
+      \verb https://www.livrosabertos.abcd.usp.br/portaldelivrosUSP/catalog/book/1274
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

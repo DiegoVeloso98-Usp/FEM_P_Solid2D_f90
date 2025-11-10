@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TeXtidote analysis</title>
+<style type="text/css">
+body {
+  font-family: sans-serif;
+}
+.highlight, .highlight-sh, .highlight-spelling {
+  padding: 2pt;
+  border-radius: 4pt;
+  cursor: help;
+  opacity: 0.7;
+  border: dashed 1px;
+}
+.highlight {
+  background-color: orange;
+  color: black;
+}
+.highlight-sh {
+  background-color: yellow;
+  color: black;
+}
+.highlight-spelling {
+  background-color: red;
+  color: white;
+}
+div.original-file {
+  font-family: monospace;
+  font-size: 11pt;
+  background-color: #f8f8ff;
+  padding: 20pt;
+  border-radius: 6pt;
+}
+.textidote {
+  	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgd2lkdGg9IjEwMC4wOTEwNW1tIiAgIGhlaWdodD0iMTguMjA5MDk5bW0iICAgdmlld0JveD0iMCAwIDEwMC4wOTEwNSAxOC4yMDkwOTkiICAgdmVyc2lvbj0iMS4xIiAgIGlkPSJzdmc4IiAgIGlua3NjYXBlOnZlcnNpb249IjAuOTEgcjEzNzI1IiAgIHNvZGlwb2RpOmRvY25hbWU9InRleHRpZG90ZS5zdmciPiAgPGRlZnMgICAgIGlkPSJkZWZzMiIgLz4gIDxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIGlkPSJiYXNlIiAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxLjAiICAgICBpbmtzY2FwZTpwYWdlb3BhY2l0eT0iMC4wIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOnpvb209IjEiICAgICBpbmtzY2FwZTpjeD0iLTI1NC4yNTMwOSIgICAgIGlua3NjYXBlOmN5PSItMjc4LjM3NTkxIiAgICAgaW5rc2NhcGU6ZG9jdW1lbnQtdW5pdHM9Im1tIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0ibGF5ZXIxIiAgICAgc2hvd2dyaWQ9ImZhbHNlIiAgICAgZml0LW1hcmdpbi10b3A9IjAiICAgICBmaXQtbWFyZ2luLWxlZnQ9IjAiICAgICBmaXQtbWFyZ2luLXJpZ2h0PSIwIiAgICAgZml0LW1hcmdpbi1ib3R0b209IjAiICAgICBpbmtzY2FwZTp3aW5kb3ctd2lkdGg9IjE5MjAiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxMDIxIiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjAiICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMjY1IiAgICAgaW5rc2NhcGU6d2luZG93LW1heGltaXplZD0iMSIgLz4gIDxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhNSI+ICAgIDxyZGY6UkRGPiAgICAgIDxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+ICAgICAgICA8ZGM6dHlwZSAgICAgICAgICAgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIgLz4gICAgICAgIDxkYzp0aXRsZSAvPiAgICAgIDwvY2M6V29yaz4gICAgPC9yZGY6UkRGPiAgPC9tZXRhZGF0YT4gIDxnICAgICBpbmtzY2FwZTpsYWJlbD0iTGF5ZXIgMSIgICAgIGlua3NjYXBlOmdyb3VwbW9kZT0ibGF5ZXIiICAgICBpZD0ibGF5ZXIxIiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTI5LjczODA5NSwtNzAuNTc3NzUxKSI+ICAgIDxnICAgICAgIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXdlaWdodDpub3JtYWw7Zm9udC1zaXplOjIwLjkyODk0NTU0cHg7bGluZS1oZWlnaHQ6MS4yNTtmb250LWZhbWlseTpzYW5zLXNlcmlmO2xldHRlci1zcGFjaW5nOjBweDt3b3JkLXNwYWNpbmc6MHB4O2ZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MTtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS45Nzc1MzgyMztzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZSIgICAgICAgaWQ9InRleHQ4MzYiPiAgICAgIDxwYXRoICAgICAgICAgZD0ibSAzMC43MjY4NjQsNzEuNTY2NTIgNS4yMzIyMzYsMCAwLDQuMjA5MDQ0IDUuODEzNTk2LDAgMCwzLjYwNDQyOSAtNS44MTM1OTYsMCAwLDQuODEzNjU4IDUuODEzNTk2LDAgMCwzLjYwNDQyOSAtMTEuMDQ1ODMyLDAgMCwtMTYuMjMxNTYgeiIgICAgICAgICBzdHlsZT0iZm9udC1zdHlsZTpub3JtYWw7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXdlaWdodDpub3JtYWw7Zm9udC1zdHJldGNoOm5vcm1hbDtmb250LWZhbWlseTpUdXRvcjstaW5rc2NhcGUtZm9udC1zcGVjaWZpY2F0aW9uOlR1dG9yO2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS45Nzc1MzgyMztzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZSIgICAgICAgICBpZD0icGF0aDMzODYiIC8+ICAgICAgPHBhdGggICAgICAgICBkPSJtIDQyLjMzNTg4OCw3NS43NzU1NjQgMTEuMDQ1ODMyLDAgMCw3LjgxMzQ3MyAtNS44MTM1OTYsMCAwLDAuNjA0NjE0IDUuODEzNTk2LDAgMCwzLjYwNDQyOSAtMTEuMDQ1ODMyLDAgMCwtMTIuMDIyNTE2IHogbSA1LjIzMjIzNiw0LjIwOTA0MyAwLjU4MTM2LDAgMCwtMC42MDQ2MTQgLTAuNTgxMzYsMCAwLDAuNjA0NjE0IHoiICAgICAgICAgc3R5bGU9ImZvbnQtc3R5bGU6bm9ybWFsO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc3RyZXRjaDpub3JtYWw7Zm9udC1mYW1pbHk6VHV0b3I7LWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjpUdXRvcjtmaWxsOiNmZmZmZmY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuOTc3NTM4MjM7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmUiICAgICAgICAgaWQ9InBhdGgzMzg4IiAvPiAgICAgIDxwYXRoICAgICAgICAgZD0ibSA1My45NDQ5MTIsNzUuNzc1NTY0IDUuMjMyMjM2LDAgMCwzLjYwNDQyOSAtNS4yMzIyMzYsMCAwLC0zLjYwNDQyOSB6IG0gNS44MTM1OTYsMCA1LjIzMjIzNiwwIDAsMy42MDQ0MjkgLTUuMjMyMjM2LDAgMCwtMy42MDQ0MjkgeiBtIC01LjgxMzU5Niw4LjQxODA4NyA1LjIzMjIzNiwwIDAsMy42MDQ0MjkgLTUuMjMyMjM2LDAgMCwtMy42MDQ0MjkgeiBtIDUuODEzNTk2LDAgNS4yMzIyMzYsMCAwLDMuNjA0NDI5IC01LjIzMjIzNiwwIDAsLTMuNjA0NDI5IHoiICAgICAgICAgc3R5bGU9ImZvbnQtc3R5bGU6bm9ybWFsO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc3RyZXRjaDpub3JtYWw7Zm9udC1mYW1pbHk6VHV0b3I7LWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjpUdXRvcjtmaWxsOiNmZmZmZmY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuOTc3NTM4MjM7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmUiICAgICAgICAgaWQ9InBhdGgzMzkwIiAvPiAgICAgIDxwYXRoICAgICAgICAgZD0ibSA2NS41NTM5MzYsNzEuNTY2NTIgNS4yMzIyMzYsMCAwLDQuMjA5MDQ0IDUuODEzNTk2LDAgMCwzLjYwNDQyOSAtNS44MTM1OTYsMCAwLDQuODEzNjU4IDUuODEzNTk2LDAgMCwzLjYwNDQyOSAtMTEuMDQ1ODMyLDAgMCwtMTYuMjMxNTYgeiIgICAgICAgICBzdHlsZT0iZm9udC1zdHlsZTpub3JtYWw7Zm9udC12YXJpYW50Om5vcm1hbDtmb250LXdlaWdodDpub3JtYWw7Zm9udC1zdHJldGNoOm5vcm1hbDtmb250LWZhbWlseTpUdXRvcjstaW5rc2NhcGUtZm9udC1zcGVjaWZpY2F0aW9uOlR1dG9yO2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MS45Nzc1MzgyMztzdHJva2UtbWl0ZXJsaW1pdDo0O3N0cm9rZS1kYXNoYXJyYXk6bm9uZSIgICAgICAgICBpZD0icGF0aDMzOTIiIC8+ICAgICAgPHBhdGggICAgICAgICBkPSJtIDc3LjE2Mjk2LDc1Ljc3NTU2NCA1LjIzMjIzNiwwIDAsMTIuMDIyNTE2IC01LjIzMjIzNiwwIDAsLTEyLjAyMjUxNiB6IG0gMCwtNC4yMDkwNDQgNS4yMzIyMzYsMCAwLDMuNjA0NDMgLTUuMjMyMjM2LDAgMCwtMy42MDQ0MyB6IiAgICAgICAgIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO2ZvbnQtZmFtaWx5OlR1dG9yOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246VHV0b3I7ZmlsbDojZmZmZmZmO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjk3NzUzODIzO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lIiAgICAgICAgIGlkPSJwYXRoMzM5NCIgLz4gICAgICA8cGF0aCAgICAgICAgIGQ9Im0gODIuOTY3NDcyLDc1Ljc3NTU2NCA1LjgxMzU5NiwwIDAsLTQuMjA5MDQ0IDUuMjMyMjM2LDAgMCwxNi4yMzE1NiAtMTEuMDQ1ODMyLDAgMCwtMTIuMDIyNTE2IHogbSA1LjIzMjIzNiw4LjQxODA4NyAwLjU4MTM2LDAgMCwtNC44MTM2NTggLTAuNTgxMzYsMCAwLDQuODEzNjU4IHoiICAgICAgICAgc3R5bGU9ImZvbnQtc3R5bGU6bm9ybWFsO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc3RyZXRjaDpub3JtYWw7Zm9udC1mYW1pbHk6VHV0b3I7LWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjpUdXRvcjtmaWxsOiNmZmZmZmY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjEuOTc3NTM4MjM7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmUiICAgICAgICAgaWQ9InBhdGgzMzk2IiAvPiAgICAgIDxwYXRoICAgICAgICAgZD0ibSA5NC41NzY0OTYsNzUuNzc1NTY0IDExLjA0NTgzNCwwIDAsMTIuMDIyNTE2IC0xMS4wNDU4MzQsMCAwLC0xMi4wMjI1MTYgeiBtIDUuMjMyMjM3LDguNDE4MDg3IDAuNTgxMzU3LDAgMCwtNC44MTM2NTggLTAuNTgxMzU3LDAgMCw0LjgxMzY1OCB6IiAgICAgICAgIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO2ZvbnQtZmFtaWx5OlR1dG9yOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246VHV0b3I7ZmlsbDojZmZmZmZmO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjk3NzUzODIzO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lIiAgICAgICAgIGlkPSJwYXRoMzM5OCIgLz4gICAgICA8cGF0aCAgICAgICAgIGQ9Im0gMTA2LjE4NTUyLDcxLjU2NjUyIDUuMjMyMjQsMCAwLDQuMjA5MDQ0IDUuODEzNTksMCAwLDMuNjA0NDI5IC01LjgxMzU5LDAgMCw0LjgxMzY1OCA1LjgxMzU5LDAgMCwzLjYwNDQyOSAtMTEuMDQ1ODMsMCAwLC0xNi4yMzE1NiB6IiAgICAgICAgIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO2ZvbnQtZmFtaWx5OlR1dG9yOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246VHV0b3I7ZmlsbDojZmZmZmZmO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjk3NzUzODIzO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lIiAgICAgICAgIGlkPSJwYXRoMzQwMCIgLz4gICAgICA8cGF0aCAgICAgICAgIGQ9Im0gMTE3Ljc5NDU0LDc1Ljc3NTU2NCAxMS4wNDU4NCwwIDAsNy44MTM0NzMgLTUuODEzNiwwIDAsMC42MDQ2MTQgNS44MTM2LDAgMCwzLjYwNDQyOSAtMTEuMDQ1ODQsMCAwLC0xMi4wMjI1MTYgeiBtIDUuMjMyMjQsNC4yMDkwNDMgMC41ODEzNiwwIDAsLTAuNjA0NjE0IC0wLjU4MTM2LDAgMCwwLjYwNDYxNCB6IiAgICAgICAgIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO2ZvbnQtZmFtaWx5OlR1dG9yOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246VHV0b3I7ZmlsbDojZmZmZmZmO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoxLjk3NzUzODIzO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lIiAgICAgICAgIGlkPSJwYXRoMzQwMiIgLz4gICAgPC9nPiAgPC9nPjwvc3ZnPg==);
+}
+h2.filename {
+  font-family: monospace;
+}
+h1.textidote {
+  width: 378px;
+  height: 68px;
+  display: block;
+}
+.keyword1 {
+  font-weight: bold;
+  color: green;
+}
+.keyword2 {
+  font-weight: bold;
+  color: darkblue;
+}
+.comment, .comment * {
+  color: darkred;
+  font-weight: normal;
+}
+.linenb {
+  font-style: italic;
+  color: lightgrey;
+  width: 30pt;
+  float: left;
+  margin-top: 1pt;
+  margin-bottom: 1pt;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.codeline {
+  margin-left: -30pt;
+  padding-left: 60pt;
+  margin-top: 1pt;
+  margin-bottom: 1pt;
+}
+.no-text {
+  display: none;
+}
+.clear {
+  clear: both;
+}
+</style>
+</head>
+<body>
+<a href="https://sylvainhalle.github.io/textidote"><h1 class="textidote"><span class="no-text">Results of TeXtidote analysis</span></h1></a>
+<p>Here is the result of analyzing your file(s) with TeXtidote. Hover the mouse over highlighted portions of the document to read a tooltip that gives you some writing advice.</p>
+<p>Found 74 warning(s)</p>
+<div class="original-file">
+<div class="linenb">&nbsp;&nbsp;1</div><div class="codeline"><span class="highlight-sh" title="If a section has sub-sections, it should have more than one such sub-section. [sh:nsubdiv]"></span><span class="keyword1">\documentclass</span>[</div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;2</div><div class="codeline">	<span class="comment">% -- opções da classe memoir --</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;3</div><div class="codeline">    article,</div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;4</div><div class="codeline">	12pt,				<span class="comment">% tamanho da fonte</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;5</div><div class="codeline">	<span class="comment">%openright,			% capítulos começam em pág ímpar (insere página vazia caso preciso)</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;6</div><div class="codeline">	oneside,			<span class="comment">% para impressão em um só lado. Oposto a oneside</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;7</div><div class="codeline">	a4paper,			<span class="comment">% tamanho do papel. </span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;8</div><div class="codeline">	<span class="comment">% -- opções da classe abntex2 --</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;&nbsp;9</div><div class="codeline">	<span class="comment">%chapter=TITLE,		% títulos de capítulos convertidos em letras maiúsculas</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;10</div><div class="codeline">	<span class="comment">%section=TITLE,		% títulos de seções convertidos em letras maiúsculas</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;11</div><div class="codeline">	<span class="comment">%subsection=TITLE,	% títulos de subseções convertidos em letras maiúsculas</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;12</div><div class="codeline">	<span class="comment">%subsubsection=TITLE,% títulos de subsubseções convertidos em letras maiúsculas</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;13</div><div class="codeline">	<span class="comment">% -- opções do pacote babel --</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;14</div><div class="codeline">	english,			<span class="comment">% idioma adicional para hifenização</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;15</div><div class="codeline">	french,				<span class="comment">% idioma adicional para hifenização</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;16</div><div class="codeline">	spanish,			<span class="comment">% idioma adicional para hifenização</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;17</div><div class="codeline">	brazil,				<span class="comment">% o último idioma é o principal do documento</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;18</div><div class="codeline">	]{abntex2}</div><div class="clear"></div>
+<div class="linenb">&nbsp;19</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;20</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;21</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;22</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;23</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;24</div><div class="codeline"><span class="comment"><span class="comment">% PACOTES</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;25</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;26</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;27</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;28</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;29</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;30</div><div class="codeline"><span class="comment"><span class="comment">% Pacotes fundamentais para o abnTeX (não mexer)</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;31</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;32</div><div class="codeline"><span class="keyword1">\usepackage</span>{lmodern}			<span class="comment">% Usa a fonte Latin Modern</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;33</div><div class="codeline"><span class="keyword1">\usepackage</span>[T1]{fontenc}		<span class="comment">% Selecao de codigos de fonte.</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;34</div><div class="codeline"><span class="keyword1">\usepackage</span>[utf8]{inputenc}		<span class="comment">% Codificacao do documento (conversão automática dos acentos)</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;35</div><div class="codeline"><span class="keyword1">\usepackage</span>{indentfirst}		<span class="comment">% Indenta o primeiro parágrafo de cada seção.</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;36</div><div class="codeline"><span class="keyword1">\usepackage</span>{color}				<span class="comment">% Controle das cores</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;37</div><div class="codeline"><span class="keyword1">\usepackage</span>{graphicx}			<span class="comment">% Inclusão de gráficos</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;38</div><div class="codeline"><span class="keyword1">\usepackage</span>{microtype} 			<span class="comment">% para melhorias de justificação</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;39</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;40</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;41</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;42</div><div class="codeline"><span class="comment"><span class="comment">% Pacotes do usuário (pode mexer)</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;43</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;44</div><div class="codeline"><span class="keyword1">\usepackage</span>{setspace}</div><div class="clear"></div>
+<div class="linenb">&nbsp;45</div><div class="codeline"><span class="keyword1">\usepackage</span>{grffile}            <span class="comment">% para não mostrar o endereço local da figura na legenda</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;46</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;47</div><div class="codeline"><span class="comment"><span class="comment">% Pacotes de equações e símbolos matemáticos</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;48</div><div class="codeline"><span class="keyword1">\usepackage</span>{bm}</div><div class="clear"></div>
+<div class="linenb">&nbsp;49</div><div class="codeline"><span class="keyword1">\usepackage</span>{isomath}</div><div class="clear"></div>
+<div class="linenb">&nbsp;50</div><div class="codeline"><span class="keyword1">\usepackage</span>{amsmath}</div><div class="clear"></div>
+<div class="linenb">&nbsp;51</div><div class="codeline">\DeclareMathOperator{\Tr}{Tr}</div><div class="clear"></div>
+<div class="linenb">&nbsp;52</div><div class="codeline"><span class="keyword1">\usepackage</span>{bbm}</div><div class="clear"></div>
+<div class="linenb">&nbsp;53</div><div class="codeline"><span class="keyword1">\usepackage</span>{mathrsfs}</div><div class="clear"></div>
+<div class="linenb">&nbsp;54</div><div class="codeline"><span class="keyword1">\usepackage</span>{amssymb}</div><div class="clear"></div>
+<div class="linenb">&nbsp;55</div><div class="codeline"><span class="keyword1">\usepackage</span>{wasysym}</div><div class="clear"></div>
+<div class="linenb">&nbsp;56</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;57</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;58</div><div class="codeline"><span class="comment"><span class="comment">% Pacotes de citações (se for trabalho para o Brasil, não mexer)</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;59</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;60</div><div class="codeline"><span class="keyword1">\usepackage</span>[brazilian,hyperpageref]{backref}	 <span class="comment">% Paginas com as citações na bibl</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;61</div><div class="codeline"><span class="keyword1">\usepackage</span>[alf,abnt-doi=expand]{abntex2cite}			         <span class="comment">% Citações padrão ABNT</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;62</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;63</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;64</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;65</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;66</div><div class="codeline"><span class="comment"><span class="comment">% --- </span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;67</div><div class="codeline"><span class="comment"><span class="comment">% CONFIGURAÇÕES DE PACOTES</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;68</div><div class="codeline"><span class="comment"><span class="comment">% --- </span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;69</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;70</div><div class="codeline"><span class="comment"><span class="comment">% Para iniciar capítulos na mesma página, pulando apenas uma linha</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;71</div><div class="codeline">\setlength\afterchapskip{\lineskip}</div><div class="clear"></div>
+<div class="linenb">&nbsp;72</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;73</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;74</div><div class="codeline"><span class="comment"><span class="comment">% Configurações do pacote backref</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;75</div><div class="codeline"><span class="comment"><span class="comment">% Usado sem a opção hyperpageref de backref</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;76</div><div class="codeline">\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}</div><div class="clear"></div>
+<div class="linenb">&nbsp;77</div><div class="codeline"><span class="comment"><span class="comment">% Texto padrão antes do número das páginas</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;78</div><div class="codeline">\renewcommand{\backref}{}</div><div class="clear"></div>
+<div class="linenb">&nbsp;79</div><div class="codeline"><span class="comment"><span class="comment">% Define os textos da citação</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;80</div><div class="codeline">\renewcommand*{\backrefalt}[4]{</div><div class="clear"></div>
+<div class="linenb">&nbsp;81</div><div class="codeline">	\ifcase #1 <span class="comment">%</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;82</div><div class="codeline">		Nenhuma citação no texto.<span class="comment">%</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;83</div><div class="codeline">	\or</div><div class="clear"></div>
+<div class="linenb">&nbsp;84</div><div class="codeline">		Citado na página #2.<span class="comment">%</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;85</div><div class="codeline">	\else</div><div class="clear"></div>
+<div class="linenb">&nbsp;86</div><div class="codeline">		Citado #1 vezes nas páginas #2.<span class="comment">%</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;87</div><div class="codeline">	\fi}<span class="comment">%</span></div><div class="clear"></div>
+<div class="linenb">&nbsp;88</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;89</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">&nbsp;90</div><div class="codeline"><span class="comment"><span class="comment">%% Para projetos FAPESP, não precisa (fiz as folhas de rosto a mão)</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;91</div><div class="codeline"><span class="comment"><span class="comment">%% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;92</div><div class="codeline"><span class="comment"><span class="comment">%% Informações de dados para CAPA e FOLHA DE ROSTO</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;93</div><div class="codeline"><span class="comment"><span class="comment">%% ---</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;94</div><div class="codeline"><span class="comment"><span class="comment">%\titulo{}</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;95</div><div class="codeline"><span class="comment"><span class="comment">%\autor{}</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;96</div><div class="codeline"><span class="comment"><span class="comment">%\local{}</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;97</div><div class="codeline"><span class="comment"><span class="comment">%\data{}</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;98</div><div class="codeline"><span class="comment"><span class="comment">%\instituicao{}</span></span></div><div class="clear"></div>
+<div class="linenb">&nbsp;99</div><div class="codeline"><span class="comment"><span class="comment">%</span></span></div><div class="clear"></div>
+<div class="linenb">100</div><div class="codeline"><span class="comment"><span class="comment">%\tipotrabalho{}</span></span></div><div class="clear"></div>
+<div class="linenb">101</div><div class="codeline"><span class="comment"><span class="comment">%% O preambulo deve conter o tipo do trabalho, o objetivo, </span></span></div><div class="clear"></div>
+<div class="linenb">102</div><div class="codeline"><span class="comment"><span class="comment">%% o nome da instituição e a área de concentração </span></span></div><div class="clear"></div>
+<div class="linenb">103</div><div class="codeline"><span class="comment"><span class="comment">%\preambulo{}</span></span></div><div class="clear"></div>
+<div class="linenb">104</div><div class="codeline"><span class="comment"><span class="comment">%% ---</span></span></div><div class="clear"></div>
+<div class="linenb">105</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">106</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">107</div><div class="codeline"><span class="comment"><span class="comment">% Configurações de aparência do PDF final</span></span></div><div class="clear"></div>
+<div class="linenb">108</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">109</div><div class="codeline"><span class="comment"><span class="comment">% alterando o aspecto da cor azul</span></span></div><div class="clear"></div>
+<div class="linenb">110</div><div class="codeline">\definecolor{blue}{RGB}{41,5,195}</div><div class="clear"></div>
+<div class="linenb">111</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">112</div><div class="codeline"><span class="comment"><span class="comment">% informações do PDF</span></span></div><div class="clear"></div>
+<div class="linenb">113</div><div class="codeline">\makeatletter</div><div class="clear"></div>
+<div class="linenb">114</div><div class="codeline">\hypersetup{</div><div class="clear"></div>
+<div class="linenb">115</div><div class="codeline">     	<span class="comment">%pagebackref=true,</span></div><div class="clear"></div>
+<div class="linenb">116</div><div class="codeline">	pdftitle={\@title}, </div><div class="clear"></div>
+<div class="linenb">117</div><div class="codeline">	pdfauthor={\@author},</div><div class="clear"></div>
+<div class="linenb">118</div><div class="codeline">    pdfsubject={\imprimirpreambulo},</div><div class="clear"></div>
+<div class="linenb">119</div><div class="codeline">	pdfcreator={LaTeX with abnTeX2},</div><div class="clear"></div>
+<div class="linenb">120</div><div class="codeline">		<span class="comment">%pdfkeywords={abnt}{latex}{abntex}{abntex2}{projeto de pesquisa}, </span></div><div class="clear"></div>
+<div class="linenb">121</div><div class="codeline">		colorlinks=true,       		    <span class="comment">% false: boxed links; true: colored links</span></div><div class="clear"></div>
+<div class="linenb">122</div><div class="codeline">    	linkcolor=blue,          		<span class="comment">% color of internal links</span></div><div class="clear"></div>
+<div class="linenb">123</div><div class="codeline">    	citecolor=blue,        			<span class="comment">% color of links to bibliography</span></div><div class="clear"></div>
+<div class="linenb">124</div><div class="codeline">    	filecolor=magenta,      		<span class="comment">% color of file links</span></div><div class="clear"></div>
+<div class="linenb">125</div><div class="codeline">	urlcolor=blue,</div><div class="clear"></div>
+<div class="linenb">126</div><div class="codeline">	bookmarksdepth=4</div><div class="clear"></div>
+<div class="linenb">127</div><div class="codeline">}</div><div class="clear"></div>
+<div class="linenb">128</div><div class="codeline">\makeatother</div><div class="clear"></div>
+<div class="linenb">129</div><div class="codeline"><span class="comment"><span class="comment">% --- </span></span></div><div class="clear"></div>
+<div class="linenb">130</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">131</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">132</div><div class="codeline"><span class="comment"><span class="comment">% Posiciona figuras e tabelas no topo da página quando adicionadas sozinhas</span></span></div><div class="clear"></div>
+<div class="linenb">133</div><div class="codeline"><span class="comment"><span class="comment">% em um página em branco. Ver https://github.com/abntex/abntex2/issues/170</span></span></div><div class="clear"></div>
+<div class="linenb">134</div><div class="codeline">\makeatletter</div><div class="clear"></div>
+<div class="linenb">135</div><div class="codeline">\setlength{\@fptop}{5pt} <span class="comment">% Set distance from top of page to first float</span></div><div class="clear"></div>
+<div class="linenb">136</div><div class="codeline">\makeatother</div><div class="clear"></div>
+<div class="linenb">137</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">138</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">139</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">140</div><div class="codeline"><span class="comment"><span class="comment">% Possibilita criação de Quadros e Lista de quadros.</span></span></div><div class="clear"></div>
+<div class="linenb">141</div><div class="codeline"><span class="comment"><span class="comment">% Ver https://github.com/abntex/abntex2/issues/176</span></span></div><div class="clear"></div>
+<div class="linenb">142</div><div class="codeline"><span class="comment"><span class="comment">%</span></span></div><div class="clear"></div>
+<div class="linenb">143</div><div class="codeline">\newcommand{\quadroname}{Quadro}</div><div class="clear"></div>
+<div class="linenb">144</div><div class="codeline">\newcommand{\listofquadrosname}{Lista de quadros}</div><div class="clear"></div>
+<div class="linenb">145</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">146</div><div class="codeline">\newfloat[chapter]{quadro}{loq}{\quadroname}</div><div class="clear"></div>
+<div class="linenb">147</div><div class="codeline">\newlistof{listofquadros}{loq}{\listofquadrosname}</div><div class="clear"></div>
+<div class="linenb">148</div><div class="codeline">\newlistentry{quadro}{loq}{0}</div><div class="clear"></div>
+<div class="linenb">149</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">150</div><div class="codeline"><span class="comment"><span class="comment">% configurações para atender às regras da ABNT</span></span></div><div class="clear"></div>
+<div class="linenb">151</div><div class="codeline">\setfloatadjustment{quadro}{\centering}</div><div class="clear"></div>
+<div class="linenb">152</div><div class="codeline">\counterwithout{quadro}{chapter}</div><div class="clear"></div>
+<div class="linenb">153</div><div class="codeline">\renewcommand{\cftquadroname}{\quadroname\space} </div><div class="clear"></div>
+<div class="linenb">154</div><div class="codeline">\renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}</div><div class="clear"></div>
+<div class="linenb">155</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">156</div><div class="codeline">\setfloatlocations{quadro}{hbtp} <span class="comment">% Ver https://github.com/abntex/abntex2/issues/176</span></div><div class="clear"></div>
+<div class="linenb">157</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">158</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">159</div><div class="codeline"><span class="comment"><span class="comment">% --- </span></span></div><div class="clear"></div>
+<div class="linenb">160</div><div class="codeline"><span class="comment"><span class="comment">% Espaçamentos entre linhas e parágrafos </span></span></div><div class="clear"></div>
+<div class="linenb">161</div><div class="codeline"><span class="comment"><span class="comment">% --- </span></span></div><div class="clear"></div>
+<div class="linenb">162</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">163</div><div class="codeline"><span class="comment"><span class="comment">% O tamanho do parágrafo é dado por:</span></span></div><div class="clear"></div>
+<div class="linenb">164</div><div class="codeline">\setlength{\parindent}{1.30cm}</div><div class="clear"></div>
+<div class="linenb">165</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">166</div><div class="codeline"><span class="comment"><span class="comment">% Controle do espaçamento entre um parágrafo e outro:</span></span></div><div class="clear"></div>
+<div class="linenb">167</div><div class="codeline">\setlength{\parskip}{0.2cm}  <span class="comment">% tente também \onelineskip</span></div><div class="clear"></div>
+<div class="linenb">168</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">169</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">170</div><div class="codeline"><span class="comment"><span class="comment">% compila o indice</span></span></div><div class="clear"></div>
+<div class="linenb">171</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">172</div><div class="codeline">\makeindex</div><div class="clear"></div>
+<div class="linenb">173</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">174</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">175</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">176</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">177</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">178</div><div class="codeline"><span class="comment"><span class="comment">%% ---</span></span></div><div class="clear"></div>
+<div class="linenb">179</div><div class="codeline"><span class="comment"><span class="comment">%% Símbolos matemáticos (pode mexer)</span></span></div><div class="clear"></div>
+<div class="linenb">180</div><div class="codeline"><span class="comment"><span class="comment">%% ---</span></span></div><div class="clear"></div>
+<div class="linenb">181</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\matr}[1]{\bm{#1}}</span></span></div><div class="clear"></div>
+<div class="linenb">182</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\sig}{\matr{\sigma}}</span></span></div><div class="clear"></div>
+<div class="linenb">183</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\pd}[2]{\dfrac{\partial{#1}}{\partial{#2}}}</span></span></div><div class="clear"></div>
+<div class="linenb">184</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\EE}{\matr{\dot{E}}}</span></span></div><div class="clear"></div>
+<div class="linenb">185</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\EEp}{\matr{\dot{E}}^{\prime}}</span></span></div><div class="clear"></div>
+<div class="linenb">186</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\EEm}{\dot{E}_m}</span></span></div><div class="clear"></div>
+<div class="linenb">187</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\EEq}{\dot{E}_{eq}}</span></span></div><div class="clear"></div>
+<div class="linenb">188</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\epsG}{\matr{\dot{\epsilon}}_G}</span></span></div><div class="clear"></div>
+<div class="linenb">189</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\eps}[1]{\matr{\dot{\epsilon}}^{#1}}</span></span></div><div class="clear"></div>
+<div class="linenb">190</div><div class="codeline"><span class="comment"><span class="comment">%\newcommand{\Sig}{\matr{\Sigma}}</span></span></div><div class="clear"></div>
+<div class="linenb">191</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">192</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">193</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">194</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">195</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">196</div><div class="codeline"><span class="comment"><span class="comment">% ----</span></span></div><div class="clear"></div>
+<div class="linenb">197</div><div class="codeline"><span class="comment"><span class="comment">% INÍCIO DO DOCUMENTO</span></span></div><div class="clear"></div>
+<div class="linenb">198</div><div class="codeline"><span class="comment"><span class="comment">% ----</span></span></div><div class="clear"></div>
+<div class="linenb">199</div><div class="codeline"><span class="keyword2">\begin{document}</span></div><div class="clear"></div>
+<div class="linenb">200</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">201</div><div class="codeline"><span class="comment"><span class="comment">% Seleciona o idioma do documento (conforme pacotes do babel)</span></span></div><div class="clear"></div>
+<div class="linenb">202</div><div class="codeline"><span class="comment"><span class="comment">%\selectlanguage{english}</span></span></div><div class="clear"></div>
+<div class="linenb">203</div><div class="codeline">\selectlanguage{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Brazil] (1) [lt:pt:UPPERCASE_SENTENCE_START]"></span>brazil}</div><div class="clear"></div>
+<div class="linenb">204</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">205</div><div class="codeline"><span class="comment"><span class="comment">% Retira espaço extra obsoleto entre as frases.</span></span></div><div class="clear"></div>
+<div class="linenb">206</div><div class="codeline">\frenchspacing </div><div class="clear"></div>
+<div class="linenb">207</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">208</div><div class="codeline">\DoubleSpacing</div><div class="clear"></div>
+<div class="linenb">209</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">210</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">211</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">212</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">213</div><div class="codeline"><span class="comment"><span class="comment">% Folha de rosto em português (FAPESP) feita manualmente</span></span></div><div class="clear"></div>
+<div class="linenb">214</div><div class="codeline">\pagestyle{plain}</div><div class="clear"></div>
+<div class="linenb">215</div><div class="codeline"><span class="keyword2">\begin{center}</span></div><div class="clear"></div>
+<div class="linenb">216</div><div class="codeline">    \Large</div><div class="clear"></div>
+<div class="linenb">217</div><div class="codeline">    <span class="keyword1">\textbf</span>{Modelo de campo de fase para o fraturamento frágil de materiais ortótropos}</div><div class="clear"></div>
+<div class="linenb">218</div><div class="codeline"><span class="keyword2">\end{center}</span></div><div class="clear"></div>
+<div class="linenb">219</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">220</div><div class="codeline"><span class="keyword2">\begin{flushright}</span></div><div class="clear"></div>
+<div class="linenb">221</div><div class="codeline">    Aluno: Eng. Diego Dias Veloso <span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">222</div><div class="codeline">    Orientador: Prof. Dr. Ayrton Ribeiro Ferreira</div><div class="clear"></div>
+<div class="linenb">223</div><div class="codeline"><span class="keyword2">\end{flushright}</span></div><div class="clear"></div>
+<div class="linenb">224</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">225</div><div class="codeline"><span class="keyword2">\begin{center}</span></div><div class="clear"></div>
+<div class="linenb">226</div><div class="codeline">    Universidade de São Paulo<span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">227</div><div class="codeline">    Escola de Engenharia de São Carlos<span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">228</div><div class="codeline">    Departamento de Engenharia de Estruturas</div><div class="clear"></div>
+<div class="linenb">229</div><div class="codeline"><span class="keyword2">\end{center}</span></div><div class="clear"></div>
+<div class="linenb">230</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">231</div><div class="codeline"><span class="keyword2">\begin{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (358) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">232</div><div class="codeline">    <span class="keyword1">\textbf</span>{Resumo}:</div><div class="clear"></div>
+<div class="linenb">233</div><div class="codeline">    Os modelos de campo de fase para o fraturamento têm sido amplamente abordados na literatura recente. Essa popularidade se deve principalmente à possibilidade representar fissuras por um campo escalar contínuo usando o Método dos Elementos <span class="highlight" title="Os gentílicos e línguas são escritos em minúsculas.. Suggestions: [finitos] (623) [lt:pt:GENTILICOS_LINGUAS]">Finitos</span> (MEF) tradicional, evitando, por exemplo, a necessidade de enriquecimentos com funções descontínuas ou de remalhamento ao longo da propagação de uma fissura. No entanto, <span class="highlight" title="'a grande maioria' é uma expressão ambígua e evasiva. Reconsidere o seu uso, de acordo com o objetivo do seu texto.. Suggestions: [75<span class="comment">%? 85% 99%? Quantos?] (801) [lt:pt:PT_WEASELWORD_REPLACE]">a grande maioria</span> dos trabalhos se limita a materiais isótropos. Além disso, os modelos dedicados à anisotropia ainda carecem de adequada inclusão da resistência assimétrica à tração e compressão e de um critério para evitar a interpenetração das faces de uma fissura. Nesse contexto, esta proposta objetiva estender o modelo existente de campo de fase isótropo de \citeonline{Ferreira2024}, que supera automaticamente essas limitações e facilita extensões, para o fraturamento frágil de materiais ortótropos. A anisotropia será incluída tanto na resistência à deformação quanto na resistência ao fraturamento. O primeiro caso trata da inclusão de tensores constitutivos elásticos anisótropos de quarta ordem na relação tensão-deformação. Já o segundo, trata de considerar a taxa crítica de liberação de energia de superfície de Griffith como sendo variável segundo as direções do espaço. Espera-se, assim, contribuir ao entendimento do efeito das diferentes fontes de anisotropia no problema de fraturamento frágil e avançar significativamente no modelamento de fratura com campo de fase.</span></div><div class="clear"></div>
+<div class="linenb">234</div><div class="codeline"><span class="keyword2">\end{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (1877) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">235</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">236</div><div class="codeline">\vfill</div><div class="clear"></div>
+<div class="linenb">237</div><div class="codeline"><span class="keyword2">\begin{flushleft}</span></div><div class="clear"></div>
+<div class="linenb">238</div><div class="codeline">    <span class="keyword1">\textbf</span>{Palavras-Chave}: campo de fase, fraturamento frágil, anisotropia, dano a gradiente.</div><div class="clear"></div>
+<div class="linenb">239</div><div class="codeline"><span class="keyword2">\end{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (1992) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">240</div><div class="codeline">\thispagestyle{empty}</div><div class="clear"></div>
+<div class="linenb">241</div><div class="codeline">\pagebreak</div><div class="clear"></div>
+<div class="linenb">242</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">243</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">244</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">245</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">246</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">247</div><div class="codeline"><span class="comment"><span class="comment">% Folha de rosto em inglês (FAPESP) feita manualmente</span></span></div><div class="clear"></div>
+<div class="linenb">248</div><div class="codeline">\pagestyle{plain}</div><div class="clear"></div>
+<div class="linenb">249</div><div class="codeline"><span class="keyword2">\begin{center}</span></div><div class="clear"></div>
+<div class="linenb">250</div><div class="codeline">    \Large</div><div class="clear"></div>
+<div class="linenb">251</div><div class="codeline">    <span class="keyword1">\textbf</span>{Phase-field modeling of brittle fracture of orthotropic materials}</div><div class="clear"></div>
+<div class="linenb">252</div><div class="codeline"><span class="keyword2">\end{center}</span></div><div class="clear"></div>
+<div class="linenb">253</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">254</div><div class="codeline"><span class="keyword2">\begin{flushright}</span></div><div class="clear"></div>
+<div class="linenb">255</div><div class="codeline">    Applicant: Eng. Diego Dias Veloso <span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">256</div><div class="codeline">    Advisor: Ayrton Ribeiro Ferreira (Assistant Professor)</div><div class="clear"></div>
+<div class="linenb">257</div><div class="codeline"><span class="keyword2">\end{flushright}</span></div><div class="clear"></div>
+<div class="linenb">258</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">259</div><div class="codeline"><span class="keyword2">\begin{center}</span></div><div class="clear"></div>
+<div class="linenb">260</div><div class="codeline">    University of Sao Paulo<span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">261</div><div class="codeline">    São Carlos School of Engineering<span class="highlight-sh" title="You should not break lines manually in a paragraph. Either start a new paragraph or stay in the current one. [sh:nobreak]">\</span>\</div><div class="clear"></div>
+<div class="linenb">262</div><div class="codeline">    Department <span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (2300) [lt:pt:REPEATED_WORDS_3X]">of</span> Structural Engineering</div><div class="clear"></div>
+<div class="linenb">263</div><div class="codeline"><span class="keyword2">\end{center}</span></div><div class="clear"></div>
+<div class="linenb">264</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">265</div><div class="codeline"><span class="keyword2">\begin{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (2328) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">266</div><div class="codeline">    <span class="keyword1">\textbf</span>{Abstract}:</div><div class="clear"></div>
+<div class="linenb">267</div><div class="codeline">    Phase field models for fracturing have been widely discussed in recent literature. This popularity is primarily due to the possibility of representing <span class="highlight" title="'cracks' é um estrangeirismo. É preferível dizer 'craques'. Suggestions: [craques] (2507) [lt:pt:PT_BARBARISMS_REPLACE]">cracks</span> through a continuous scalar field using the traditional Finite Element Method (FEM), thereby avoiding <span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (2616) [lt:pt:REPEATED_WORDS_3X]">the</span> need for enrichments with discontinuous functions <span class="highlight" title="Se é uma abreviatura, falta um ponto.. Suggestions: [or.] (2670) [lt:pt:ABREVIATIONS_PUNCTUATION]">or</span> mesh refinement during <span class="highlight" title="'crack' é um estrangeirismo. É preferível dizer 'craque'. Suggestions: [craque] (2696) [lt:pt:PT_BARBARISMS_REPLACE]">crack</span> propagation. However, the vast majority of studies are limited to isotropic materials. Furthermore, models dedicated to anisotropy still lack adequate inclusion of asymmetric tensile and compressive strength, as well <span class="highlight" title="Possível fragmento.. Suggestions: [as, a, as, a] (2919) [lt:pt:FRAGMENT_TWO_ARTICLES]">as a</span> criterion to prevent <span class="highlight" title="'crack' é um estrangeirismo. É preferível dizer 'craque'. Suggestions: [craque] (2945) [lt:pt:PT_BARBARISMS_REPLACE]">crack</span> face interpenetration. In this context, this proposal aims to extend the existing isotropic phase field model by \citeonline{Ferreira2024}, which automatically overcomes these limitations and facilitates extensions, to the brittle fracturing of orthotropic materials. Anisotropy will be included in both deformation and fracture mechanisms. The former requires the incorporation of fourth-order anisotropic elastic constitutive tensors in <span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (3377) [lt:pt:REPEATED_WORDS_3X]">the</span> <span class="highlight" title="Os estrangeirismos devem estar entre aspas ou ser italizados.. Suggestions: [‘stress’, “stress”] (3381) [lt:pt:BARBARISMS]">stress</span>-strain relationship. The latter involves, in <span class="highlight" title="'short' é um estrangeirismo. É preferível dizer 'curta-metragem'. Suggestions: [curta-metragem] (3433) [lt:pt:PT_BARBARISMS_REPLACE]">short</span>, considering the critical rate of surface energy release according to spatial directions. Thus, this endeavor aims to contribute to understanding the effect of different sources of anisotropy in brittle fracturing problems and to significantly advance fracture modeling through phase field approaches.</div><div class="clear"></div>
+<div class="linenb">268</div><div class="codeline"><span class="keyword2">\end{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (3741) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">269</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">270</div><div class="codeline">\vfill</div><div class="clear"></div>
+<div class="linenb">271</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">272</div><div class="codeline"><span class="keyword2">\begin{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (3760) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">273</div><div class="codeline">    <span class="keyword1">\textbf</span>{Keywords}: phase-field, brittle fracture, anisotropy, gradient damage.</div><div class="clear"></div>
+<div class="linenb">274</div><div class="codeline"><span class="keyword2">\end{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Flushleft] (3844) [lt:pt:UPPERCASE_SENTENCE_START]"></span>flushleft}</span></div><div class="clear"></div>
+<div class="linenb">275</div><div class="codeline">\thispagestyle{empty}</div><div class="clear"></div>
+<div class="linenb">276</div><div class="codeline">\pagebreak</div><div class="clear"></div>
+<div class="linenb">277</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">278</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">279</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">280</div><div class="codeline"><span class="comment"><span class="comment">% ELEMENTOS PRÉ-TEXTUAIS</span></span></div><div class="clear"></div>
+<div class="linenb">281</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">282</div><div class="codeline">\pretextual <span class="comment">% este comando pode ser comentado caso haja algum erro no compilador</span></div><div class="clear"></div>
+<div class="linenb">283</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">284</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">285</div><div class="codeline"><span class="comment"><span class="comment">% Sumário (OBRIGATÓRIO)</span></span></div><div class="clear"></div>
+<div class="linenb">286</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">287</div><div class="codeline">\pdfbookmark[0]{\contentsname}{toc}</div><div class="clear"></div>
+<div class="linenb">288</div><div class="codeline"><span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (3914) [lt:pt:REPEATED_WORDS_3X]">\</span>tableofcontents*</div><div class="clear"></div>
+<div class="linenb">289</div><div class="codeline"><span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (3932) [lt:pt:REPEATED_WORDS_3X]">\</span>cleardoublepage</div><div class="clear"></div>
+<div class="linenb">290</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">291</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">292</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">293</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">294</div><div class="codeline"><span class="comment"><span class="comment">% ELEMENTOS TEXTUAIS</span></span></div><div class="clear"></div>
+<div class="linenb">295</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">296</div><div class="codeline">\textual</div><div class="clear"></div>
+<div class="linenb">297</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">298</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">299</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">300</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">301</div><div class="codeline"><span class="comment"><span class="comment">% Caso não queira numerar a Introdução</span></span></div><div class="clear"></div>
+<div class="linenb">302</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">303</div><div class="codeline"><span class="comment"><span class="comment">%\chapter*[Introdução]{Introdução}</span></span></div><div class="clear"></div>
+<div class="linenb">304</div><div class="codeline"><span class="comment"><span class="comment">%\addcontentsline{toc}{chapter}{Introdução}</span></span></div><div class="clear"></div>
+<div class="linenb">305</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">306</div><div class="codeline"><span class="keyword1">\section</span>{Introdução}</div><div class="clear"></div>
+<div class="linenb">307</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">308</div><div class="codeline">\<span class="highlight-sh" title="Avoid stacked headings, i.e. consecutive headings without text in between. [sh:stacked]">subsection</span>{Considerações gerais}</div><div class="clear"></div>
+<div class="linenb">309</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">310</div><div class="codeline">A presente proposta se insere no campo de estudo da Mecânica Computacional aplicada a modelos de integridade material e estrutural, os quais têm sido amplamente abordados por centros internacionais de excelência em pesquisa. Esses modelos visam representar os fenômenos presentes em sólidos e estruturas em situações de <span class="keyword1">\textit</span>{degradação} até uma eventual ruína. Por <span class="keyword1">\textit</span>{degradação} entende-se a redução na capacidade de algo em desempenhar o papel para o qual foi concebido. Dessa forma, entende-se que estruturas, assim como os materiais que as constituem, possam se degradar.</div><div class="clear"></div>
+<div class="linenb">311</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">312</div><div class="codeline">Em particular, propõe-se representar o comportamento à ruptura desses materiais através do uso de modelos de <span class="keyword1">\textit</span>{campo de fase} (<span class="keyword1">\textit</span>{phase-field}, em inglês). Essa classe de modelos tem sido objeto de estudos intensos da comunidade científica internacional nos últimos 15 anos. Periódicos de alto impacto, assim como congressos internacionais têm dado grande espaço para publicações sobre esse campo de estudo. Nesse sentido, pretende-se contribuir ao estado da arte ao propor e implementar um modelo de campo de fase que simule a ruptura frágil em materiais ortótropos.</div><div class="clear"></div>
+<div class="linenb">313</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">314</div><div class="codeline">Os exemplos possíveis de aplicação do modelo a ser proposto são muitos. Em linhas gerais, a ruptura frágil ocorre quando o limite de elasticidade em tensão do material é alto demais para <span class="highlight" title="Esta perífrase pode ser simplificada.. Suggestions: [ocorrer] (5314) [lt:pt:QUE_SUBJ_VS_INF_PESS]">que ocorra</span> achatamento por plastificação de pontas de microfissuras ou de defeitos preexistentes em sua microestrutura <span class="highlight-sh" title="Put all references in a single \cite command [sh:c:mul]">\cite{Ashby2012}. Assim, a alta concentração de tensões nessas <span class="highlight" title="Possível erro de concordância de número.. Suggestions: [ponta causa, pontas causas, pontas, causa] (5483) [lt:pt:GENERAL_NUMBER_AGREEMENT_ERRORS]">pontas causa</span> decoesões locais que podem se agrupar para formar uma macrofissura \cite{Anderson2017}. Esse é o comportamento à ruptura esperado de cerâmicas (como a Alumina), alguns polímeros (como o Acrílico), ligas ferrosas a baixas temperaturas, ferros fundidos, concreto e rochas. Na verdade, os materiais frágeis que apresentam dissipação com alguma deformação permanente, ainda que desprezível, antes de iniciar o fraturamento são chamados de <span class="keyword1">\textit</span>{quase-frágeis} \cite</span>{Lemaitre2005}. Esse é o caso do concreto, rochas e algumas cerâmicas. No entanto, esses materiais também se enquadram nas hipóteses dos modelos de campo de fase graças a modificações que podem ser feitas nas funções de degradação e de dissipação para simular, por exemplo, modelos coesivos para concreto \cite{Wu2017}. Portanto, o entendimento e simulação do fraturamento frágil por modelos de campo de fase é de interesse de diferentes setores industriais.</div><div class="clear"></div>
+<div class="linenb">315</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">316</div><div class="codeline">A relevância desse tópico à sociedade é grande. O conhecimento de modelos robustos e confiáveis para a previsão da formação e propagação de fissuras é de fundamental importância para o projeto e verificação de estruturas, em especial para aquelas que demandam alta segurança e alta eficiência na utilização de recursos, como barragens, componentes estruturais de aeronaves e vasos de pressão de reatores nucleares. Além disso, modelos que consideram uma eventual ortotropia do material permitem considerar que suas propriedades mecânicas variam conforme a direção da solicitação. Assim, obtêm-se previsões mais realísticas do seu comportamento à ruptura, e estruturas mais econômicas podem ser projetadas sem prescindir da segurança.</div><div class="clear"></div>
+<div class="linenb">317</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">318</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">319</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">320</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">321</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">322</div><div class="codeline"><span class="keyword1">\subsection</span>{Breve estado da arte}</div><div class="clear"></div>
+<div class="linenb">323</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">324</div><div class="codeline">O modelo pioneiro de campo de fase dedicado ao fraturamento frágil foi proposto por \citeonline{Bourdin2000}. Eles adaptaram a regularização feita por \citeonline{Ambrosio1990} do funcional proposto por \citeonline{Mumford1989} <span class="highlight" title="Pontuação duplicada. Suggestions: [-, —] (7318) [lt:pt:DOUBLE_PUNCTUATION]">--</span> curiosamente usado até então para problemas de segmentação de imagens <span class="highlight" title="Pontuação duplicada. Suggestions: [-, —] (7391) [lt:pt:DOUBLE_PUNCTUATION]">--</span> ao problema de fraturamento frágil escrito de forma variacional por \citeonline{Francfort1998}.</div><div class="clear"></div>
+<div class="linenb">325</div><div class="codeline">Essa adaptação foi possível ao perceber que o funcional usado para análise de imagens era análogo ao funcional classicamente definido por \citeonline{Griffith1921} para representar a taxa de liberação de energia da superfície de uma fissura. Dessa forma, a nova variável que apareceu na formulação regularizada de \citeonline{Ambrosio1990}, que representava o nível de cinza em um píxel de uma imagem, foi reinterpretada como sendo uma variável que media de forma abstrata <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (7924) [lt:pt:LOOSE_ACCENTS]">`</span>`o quão fraturado está'' um dado ponto do domínio de um sólido. Essa variável, definida no domínio de 0 (material intacto) a 1 (material completamente fraturado) passou a ser chamada variável de <span class="keyword1">\textit</span>{campo de fase} (<span class="keyword1">\textit</span>{phase-field}, em inglês), devido à interpretação de que esse campo difundia no domínio o efeito de uma fissura, descontínua <span class="highlight" title="'por definição' é uma expressão prolixa. É preferível dizer 'APAGAR'. Suggestions: [APAGAR] (8258) [lt:pt:PT_WORDINESS_REPLACE]">por definição</span>. Grande parte da popularidade desses modelos se deve à interpretação da variável de campo de fase como sendo uma variável de dano. Assim, o problema mecânico a ser resolvido pode ser enxergado como um modelo de dano a gradiente, o que permitiu reenquadrar os inúmeros trabalhos desse campo de estudo, realizados principalmente na década de 90. Por esse motivo, há autores que se referem à variável de campo de fase simplesmente como <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (8705) [lt:pt:LOOSE_ACCENTS]">`</span>`variável de dano''. </div><div class="clear"></div>
+<div class="linenb">326</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">327</div><div class="codeline">Apesar da evidente vantagem em se resolver um problema de formação e propagação de fissuras sem a necessidade de considerar a descontinuidade inerente a essas, existem limitações das formulações mais difundidas de campo de fase que impedem a utilização desses modelos para muitos problemas de grande escala.</div><div class="clear"></div>
+<div class="linenb">328</div><div class="codeline">Os subitens a seguir comentam brevemente os avanços recentes sobre essas limitações e alguns dos desafios remanescentes no campo de estudo.</div><div class="clear"></div>
+<div class="linenb">329</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">330</div><div class="codeline"><span class="keyword1">\subsubsection</span>{Como considerar um material mais resistente ao fraturamento à compressão do que à tração?}</div><div class="clear"></div>
+<div class="linenb">331</div><div class="codeline"><span class="keyword1">\label</span>{sec_split}</div><div class="clear"></div>
+<div class="linenb">332</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">333</div><div class="codeline">Os materiais sujeitos <span class="highlight" title="Possível erro de concordância verbal.. Suggestions: [a ruptura frágil apresenta] (9292) [lt:pt:GENERAL_VERB_AGREEMENT_ERRORS]">a ruptura frágil apresentam</span> uma resistência ao fraturamento maior quando submetidos à compressão do que à tração. Um caso amplamente conhecido é o do concreto, que possui a tensão de resistência à compressão da ordem de 10 vezes maior do que à tração. Por exemplo, \citeonline{Leung2001} apresenta uma relação empírica segundo a qual a proporção entre resistência à tração e a resistência à compressão decresce com o aumento desta, variando de 7\% a 13\%.</div><div class="clear"></div>
+<div class="linenb">334</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">335</div><div class="codeline">No entanto, o modelo original de campo de fase de \citeonline{Bourdin2000} para o fraturamento frágil não diferencia a resistência à tração daquela à compressão. Isso causa uma previsão errônea do caminho de propagação da fissura em determinados problemas, como no exemplo de propagação em Modo II (cisalhamento) \cite{Amor2009}. Devido a essa limitação, muitos trabalhos têm proposto diferentes maneiras para se diferenciar regiões nas quais uma fissura poderia surgir (ou propagar) daquelas onde não poderia. </div><div class="clear"></div>
+<div class="linenb">336</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">337</div><div class="codeline">A literatura tem abordado esse problema fazendo uma decomposição da energia elástica específica em duas parcelas: uma que pode ser afetada pela propagação da fissura e outra que é insensível a essa.</div><div class="clear"></div>
+<div class="linenb">338</div><div class="codeline">Nessa abordagem, cada trabalho propõe sua própria forma de decomposição dessa energia, inspirado em observações experimentais ou em hipóteses razoáveis sobre o comportamento mecânico dos materiais frágeis.</div><div class="clear"></div>
+<div class="linenb">339</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">340</div><div class="codeline">\citeonline{Lancioni2009} propuseram que apenas a parcela de energia elástica associada à parcela desviadora da deformação fosse insensível ao dano.</div><div class="clear"></div>
+<div class="linenb">341</div><div class="codeline">Já \citeonline{Amor2009}, consideraram que, além da parcela desviadora, também a volumétrica contribuísse à energia insensível ao dano, contanto que essa fosse negativa. </div><div class="clear"></div>
+<div class="linenb">342</div><div class="codeline">\citeonline{Miehe2010} realizaram uma decomposição espectral da deformação e considerou um critério particular, não-variacional (ou <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (11043) [lt:pt:LOOSE_ACCENTS]">`</span>`algorítimico''), para a decomposição da energia: em resumo, esse modelo diferencia não apenas o sinal da deformação volumétrica, mas também o sinal das deformações principais. </div><div class="clear"></div>
+<div class="linenb">343</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">344</div><div class="codeline">Apesar de esses três modelos serem amplamente utilizados na literatura, trabalhos mais recentes têm proposto formulações alternativas para superar incoerências físicas obtidas ao usar esses modelos em certas aplicações. Por exemplo, \citeonline{Vicentini2024} apontou a incapacidade desses modelos para prever o fraturamento em paredes quadradas furadas sob compressão. Como solução, apresentou-se uma modificação do critério de \citeonline{Amor2009} com a inclusão de parâmetros que podem ser calibrados para o uso em determinados caso de interesse.</div><div class="clear"></div>
+<div class="linenb">345</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">346</div><div class="codeline"><span class="keyword1">\subsubsection</span>{Como garantir que não haja interpenetração das faces de uma fissura?}</div><div class="clear"></div>
+<div class="linenb">347</div><div class="codeline"><span class="keyword1">\label</span>{sec_interp}</div><div class="clear"></div>
+<div class="linenb">348</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">349</div><div class="codeline">Outra característica típica dos materiais frágeis é a recuperação parcial da rigidez de um corpo fissurado quando as faces dessas fissuras são comprimidas uma contra a outra. É um caso típico em aplicações com inversão no sentido da solicitação. No caso de modelos que consideram fissuras descritas como descontinuidades, bastaria um critério cinemático para identificar se as faces de uma fissura estão na iminência de se tocar e, assim, corrigir a rigidez local para impedir a interpenetração. No entanto, no caso de modelos de campo de fase, essa verificação se torna muito mais complicado, pois a topologia da fissura passa a ser espalhada no domínio <span class="highlight" title="Pontuação duplicada. Suggestions: [-, —] (12475) [lt:pt:DOUBLE_PUNCTUATION]">--</span> e não mais descontínua <span class="highlight" title="Pontuação duplicada. Suggestions: [-, —] (12501) [lt:pt:DOUBLE_PUNCTUATION]">--</span>  e representada por um campo escalar contínuo.</div><div class="clear"></div>
+<div class="linenb">350</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">351</div><div class="codeline">Visando incluir essa característica nos modelos de campo de fase para o fraturamento, \citeonline{Strobl2015<span class="highlight-sh" title="There should be a space after a comma. [sh:d:001]">,S</span>trobl2016} iniciaram uma classe de trabalhos sobre a decomposição de energia elástica <span class="highlight" title="'na qual' é uma expressão prolixa. É preferível dizer 'onde' ou 'em que'. Suggestions: [onde, em que] (12735) [lt:pt:PT_WORDINESS_REPLACE]">na qual</span> se interpreta a direção do gradiente de campo de fase como sendo a direção normal à fissura regularizada.</div><div class="clear"></div>
+<div class="linenb">352</div><div class="codeline">Como a fissura é representada por um campo contínuo, há uma direção normal associada a cada ponto desse campo.</div><div class="clear"></div>
+<div class="linenb">353</div><div class="codeline">Os trabalhos que consideram essa hipótese são normalmente chamados <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (13027) [lt:pt:LOOSE_ACCENTS]">`</span>`decomposição direcional de energia'' (<span class="keyword1">\textit</span>{directional energy split}, do inglês).</div><div class="clear"></div>
+<div class="linenb">354</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">355</div><div class="codeline">Apesar do pioneirismo de \citeonline{Strobl2015<span class="highlight-sh" title="There should be a space after a comma. [sh:d:001]">,S</span>trobl2016} ao considerar a direção do gradiente do campo de fase como sendo a normal à fissura, esses trabalhos não apresentaram exemplos de aplicação convincentes. </div><div class="clear"></div>
+<div class="linenb">356</div><div class="codeline">Isso se deve, provavelmente, à complexidade inserida no problema ao decompor o tensor de deformações em parcelas normais e tangenciais à fissura, o que aumentou consideravelmente a não-linearidade da formulação e até mesmo afetou a simetria da matriz de rigidez.</div><div class="clear"></div>
+<div class="linenb">357</div><div class="codeline">Por essa razão, existem poucos trabalhos baseados nessa abordagem.</div><div class="clear"></div>
+<div class="linenb">358</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">359</div><div class="codeline">\citeonline{Steinke2019} propuseram uma modificação do trabalho de \citeonline{Strobl2015} para, em vez de decompor o tensor de deformações, decompor o de tensões em parcelas ativas e passivas, a depender das projeções deste tensor nas direções normal e tangenciais à fissura. Esse modelo assume isotropia do material e que não haja atrito entre as faces de uma fissura. \citeonline{Storm2019} generalizaram esse trabalho ao criar o conceito de <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (14045) [lt:pt:LOOSE_ACCENTS]">`</span>`Elemento Representativo de Fissura'' (<span class="keyword1">\textit</span>{Representative <span class="highlight" title="'Crack' é um estrangeirismo. É preferível dizer 'craque'. Suggestions: [Craque] (14100) [lt:pt:PT_BARBARISMS_REPLACE]">Crack</span> Element (RCE)} em inglês) para considerar materiais anisótropos. No entanto, esses modelos, apesar de bastante complexos, assumem de antemão a direção da propagação da fissura (por exemplo, fazendo-a propagar na direção normal à da tensão principal máxima).</div><div class="clear"></div>
+<div class="linenb">360</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">361</div><div class="codeline">Mais recentemente, \citeonline{Ferreira2024} apresentaram uma formulação simples e efetiva para considerar a orientação de uma fissura. A ideia consiste inicialmente em verificar em cada ponto de integração a projeção do tensor de tensões na direção normal à fissura: se esse valor for positivo, utiliza-se a formulação original de \citeonline{Bourdin2000} nesse ponto; senão, despreza-se o efeito do dano (ou seja, considera-se o material elástico intacto). Apesar da simplicidade da formulação, o modelo não apenas reproduz os comportamentos esperados em exemplos de aplicação complexos (como aquele da parede furada sob compressão, apresentado por \citeonline{Vicentini2024}), mas também consegue impedir a interpenetração das faces de uma fissura em casos de inversão do sentido da solicitação.</div><div class="clear"></div>
+<div class="linenb">362</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">363</div><div class="codeline"><span class="keyword1">\subsubsection</span>{Como incluir o efeito da anisotropia?}</div><div class="clear"></div>
+<div class="linenb">364</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">365</div><div class="codeline">Ao se interpretar modelos de campo de fase como sendo modelos de dano a gradiente, existem diferentes formas de se considerar uma eventual anisotropia. Em linhas gerais, essa pode ser inserida no modelo segundo três fontes (não excludentes entre si):</div><div class="clear"></div>
+<div class="linenb">366</div><div class="codeline"><span class="keyword2">\begin{itemize}</span></div><div class="clear"></div>
+<div class="linenb">367</div><div class="codeline">    <span class="keyword1">\item</span> <span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Na] (15420) [lt:pt:UPPERCASE_SENTENCE_START]">na</span> <span class="keyword1">\textit</span>{resistência ao fraturamento}, ou seja, variando a taxa de liberação de energia crítica de Griffith conforme as direções no espaço: $G_c := G_c(\vec{\bm{n}})$; </div><div class="clear"></div>
+<div class="linenb">368</div><div class="codeline">    <span class="keyword1">\item</span> na resposta <span class="keyword1">\textit</span>{em tensão e deformação}, utilizando um tensor de constitutivo elástico anisótropo; ou</div><div class="clear"></div>
+<div class="linenb">369</div><div class="codeline">    <span class="keyword1">\item</span> diretamente no campo de fase escalar, substituindo-o por um campo tensorial de dano.</div><div class="clear"></div>
+<div class="linenb">370</div><div class="codeline"><span class="keyword2">\end{itemize}</span></div><div class="clear"></div>
+<div class="linenb">371</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">372</div><div class="codeline">A primeira forma é a mais presente na literatura. Nessa abordagem, as formulações propõem diferentes alterações do funcional de dissipação de energia de superfície de forma que a taxa crítica de liberação de energia de superfície também possa depender das direções no espaço ($G_c:=G_c(\vec{\bm{m}})$, onde $\vec{\bm{m}}$ é um vetor unitário em $\mathbb{R}^3$ ou $\mathbb{R}^2$). Assim, o material é modelado como tendo direções preferenciais ao fraturamento.</div><div class="clear"></div>
+<div class="linenb">373</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">374</div><div class="codeline">Além disso, diferenciam-se as classes de anisotropia com respeito à resistência ao fraturamento em <span class="keyword1">\textit</span>{anisotropia fraca} ou <span class="keyword1">\textit</span>{<span class="highlight" title="Para melhorar o texto, procure variar mais os termos utilizados. (16268) [lt:pt:REPEATED_WORDS_3X]">anisotropia</span> forte}, caso $1 / G_c(\vec{\bm{m}})$ seja convexa ou não convexa, respectivamente. Apesar de as características mais peculiares do fraturamento anisótropo se deverem a anisotropias fortes <span class="highlight-sh" title="Put all references in a single \cite command [sh:c:mul]">\cite{Takei2013}, seu modelamento é mais desafiador porque o problema de propagação de dano se torna mal posto \cite{Taylor1998}. Por esse motivo, quase todos os trabalhos necessitam incluir no modelo a jacobiana do campo de fase, e não apenas seu gradiente, a partir de uma analogia com o modelo de \citeonline{Cahn1958} para crescimento ou solidificação de cristais com <span class="highlight" title="Os estrangeirismos devem estar entre aspas ou ser italizados.. Suggestions: [‘interfaces’, “interfaces”] (16777) [lt:pt:BARBARISMS]">interfaces</span> difusas \cite{Li2015,Teichtmeister2017,Li2019}. Por resultar em equações de Euler-Lagrange de quarta ordem, esses modelos são conhecidos como <span class="keyword1">\textit</span>{modelos de campo de fase em quarta ordem} \cite</span>{Borden2012} e requerem discretização com continuidade $C^1$.</div><div class="clear"></div>
+<div class="linenb">375</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">376</div><div class="codeline">No entanto, recentemente \citeonline{Gerasimov2022} propuseram uma formulação que contempla anisotropia forte sem a necessidade de continuidade $C^1$. Baseado na generalização feita por \citeonline{Focardi2001} da regularização de \citeonline{Ambrosio1990}, a anisotropia é inserida no funcional a partir do uso de diferentes normas aplicadas sobre o gradiente do campo de fase, o que requer apenas continuidade $C^0$<span class="highlight" title="Esta locução deve ser separada por vírgulas, e só deve ser utilizada no ínicio duma frase para efeitos de estilo.. Suggestions: [., No entanto] (17356) [lt:pt:VERB_COMMA_CONJUNCTION]">. No entanto</span>, os exemplos de aplicação foram limitados apenas para cisalhamento anti-simétrico.</div><div class="clear"></div>
+<div class="linenb">377</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">378</div><div class="codeline">A segunda forma para se considerar a anisotropia em modelos de campo de fase é inseri-la no tensor constitutivo elástico. No entanto, a grande dificuldade é conseguir adaptar os modelos de decomposição de energia, comentados na \autoref{<span class="highlight" title="Em portugês formal, as palavras não contêm traço baixo (_), nem são separadas por traços. Verifique que a palavra 'sec_split' está correta. (17681) [lt:pt:WORD_CONTAINS_UNDERSCORE]">sec_split}</span> e todos limitados a tensores constitutivos isótropos. Por esse motivo, existem poucos trabalhos nesse sentido \cite{Nguyen2020,Dijk2020,Gmati2020,Ziaei-Rad2023}. De forma geral, esses trabalhos propõem suas próprias decomposições de energia restritos a decomposições do tensor de deformações. <span class="highlight" title="Esta conjugação deve ser separada por vírgulas.. Suggestions: [Portanto, o] (17937) [lt:pt:VERB_COMMA_CONJUNCTION]">Portanto o</span> efeito da orientação das fissuras (\autoref{<span class="highlight" title="Em portugês formal, as palavras não contêm traço baixo (_), nem são separadas por traços. Verifique que a palavra 'sec_interp' está correta. (17983) [lt:pt:WORD_CONTAINS_UNDERSCORE]">sec_interp}</span>) é ignorado, o que limita a aplicação desses modelos.</div><div class="clear"></div>
+<div class="linenb">379</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">380</div><div class="codeline">A terceira forma é a menos comum e foi recentemente proposta por \citeonline{Petrini2023}. O campo de fase foi inserido na formulação como sendo um campo tensorial de quarta ordem. Essa formulação foi desenvolvida diretamente a partir dos princípios da Termodinâmica, da conservação da massa e de equilíbrio, o que a classifica como <span class="highlight" title="Caratere incorreto. Utilize antes o apóstrofe ou reveja a acentuação.. Suggestions: [’, ] (18369) [lt:pt:LOOSE_ACCENTS]">`</span>`termodinamicamente consistente''. Suas vantagens são as naturais inclusões (a) da anisotropia local, tanto do modelo constitutivo elástico, quanto da resistência ao fraturamento; e (b) da degradação do tensor constitutivo elástico, prescindindo da definição prévia e arbitrária de uma função de degradação escalar. Apesar do pioneirismo, ainda é necessário adaptar ou estender essa formulação para contemplar o comportamento assimétrico de materiais frágeis à tração e à compressão, além de atender a orientação das fissuras.</div><div class="clear"></div>
+<div class="linenb">381</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">382</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">383</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">384</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">385</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">386</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">387</div><div class="codeline">\<span class="highlight-sh" title="The first heading of a document should be the one with the highest level. For example, if a document contains sections, the first section cannot be preceded by a sub-section. [sh:secorder]">chapter</span>{Objetivos da proposta}<span class="keyword1">\label</span>{sec_obj}</div><div class="clear"></div>
+<div class="linenb">388</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">389</div><div class="codeline">O objetivo central desta proposta de dissertação de mestrado é estender a formulação de \citeonline{Ferreira2024}, para incluir o efeito de anisotropia, tanto do modelo constitutivo elástico-linear quanto da resistência ao fraturamento, já atendendo tanto a assimetria do comportamento dos materiais frágeis à tração e compressão quanto a orientação das fissuras. A discretização dessa formulação deverá ser feita usando o Método dos Elementos <span class="highlight" title="Os gentílicos e línguas são escritos em minúsculas.. Suggestions: [finitos] (19357) [lt:pt:GENTILICOS_LINGUAS]">Finitos</span>. Trata-se, portanto, de um assunto de interesse para a comunidade acadêmica internacional, inclusive para publicação em periódicos internacionais de alto impacto.</div><div class="clear"></div>
+<div class="linenb">390</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">391</div><div class="codeline">Para internacionalizar a pesquisa realizada, assim como colaborar à formação do aluno desta solicitação, eng. Diego Dias Veloso, pretende-se desenvolver este projeto em colaboração com o prof. Umberto Perego, Politécnico de Milão (Polimi), Itália, o qual foi supervisor de pós-doutorado do orientador desta proposta, prof. <span class="highlight" title="Esta abreviatura refere-se ao antigo grau de licenciado. O grau de doutorado escreve-se 'Dr.'.. Suggestions: [Dr.] (19852) [lt:pt:ABREVIATIONS_DR]">dr.</span> Ayrton Ribeiro Ferreira. Prevê-se a estada no Politécnico de Milão do aluno solicitante por um período de até 120 dias para a realização de parte da pesquisa.</div><div class="clear"></div>
+<div class="linenb">392</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">393</div><div class="codeline">Ao mesmo tempo, o aluno desta solicitação pretende iniciar sua formação como pesquisador em Mecânica Computacional a partir do aprendizado de ferramentas de código-livre para computação de alto desempenho, como as bibliotecas PETSc \cite{PetscWebPage} e ParMETIS para paralelização, GMSH \cite{Gmsh} para discretização de domínios, ParaView \cite{ParaView} para visualização de resultados em alta qualidade e linguagem de programação C++.</div><div class="clear"></div>
+<div class="linenb">394</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">395</div><div class="codeline">A partir dos objetivos gerais comentados acima, os itens que deverão (poderão) ser realizados são mostrados no \autoref{<span class="highlight" title="Em portugês formal, as palavras não contêm traço baixo (_), nem são separadas por traços. Verifique que a palavra 'tab_ativ' está correta. (20531) [lt:pt:WORD_CONTAINS_UNDERSCORE]">tab_ativ}</span>.</div><div class="clear"></div>
+<div class="linenb">396</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">397</div><div class="codeline"><span class="keyword2">\begin{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Quadro] (20542) [lt:pt:UPPERCASE_SENTENCE_START]">quadro}</span></span>[htb]</div><div class="clear"></div>
+<div class="linenb">398</div><div class="codeline">    <span class="keyword1">\caption</span>{Atividades a ser desenvolvidas.}</div><div class="clear"></div>
+<div class="linenb">399</div><div class="codeline">    <span class="keyword1">\label</span>{tab_ativ}</div><div class="clear"></div>
+<div class="linenb">400</div><div class="codeline"><span class="keyword2">\begin{tabular}</span>{|p{0.05\linewidth}|p{0.95\linewidth}|}</div><div class="clear"></div>
+<div class="linenb">401</div><div class="codeline">	\hline</div><div class="clear"></div>
+<div class="linenb">402</div><div class="codeline">    <span class="keyword1">\textbf</span>{n\textsuperscript{o}} &amp; <span class="keyword1">\textbf</span>{Descrição da atividade} \\ \hline</div><div class="clear"></div>
+<div class="linenb">403</div><div class="codeline">    01 &amp; completar os créditos obrigatórios em disciplinas para o curso de mestrado \\ \hline</div><div class="clear"></div>
+<div class="linenb">404</div><div class="codeline">    02 &amp; revisão bibliográfica \\ \hline</div><div class="clear"></div>
+<div class="linenb">405</div><div class="codeline">    03 &amp; estudo das bibliotecas de paralelização: PETSc e ParMETIS \\ \hline</div><div class="clear"></div>
+<div class="linenb">406</div><div class="codeline">    04 &amp; implementação do modelo isótropo clássico de \citeonline{Bourdin2000} \\ \hline</div><div class="clear"></div>
+<div class="linenb">407</div><div class="codeline">    05 &amp; redação do texto de qualificação \\ \hline</div><div class="clear"></div>
+<div class="linenb">408</div><div class="codeline">    06 &amp; exame de qualificação \\ \hline</div><div class="clear"></div>
+<div class="linenb">409</div><div class="codeline">    07 &amp; implementação da decomposição de energia de \citeonline{Ferreira2024} \\ \hline</div><div class="clear"></div>
+<div class="linenb">410</div><div class="codeline">    08 &amp; formulação e implementação do modelo constitutivo anisótropo elástico \\ \hline</div><div class="clear"></div>
+<div class="linenb">411</div><div class="codeline">    09 &amp; formulação e implementação da resistência anisótropa ao fraturamento \\ \hline</div><div class="clear"></div>
+<div class="linenb">412</div><div class="codeline">    10 &amp; período no Politécnico de Milão, Itália \\ \hline</div><div class="clear"></div>
+<div class="linenb">413</div><div class="codeline">    11 &amp; elaboração de exemplos numéricos \\ \hline</div><div class="clear"></div>
+<div class="linenb">414</div><div class="codeline">    12 &amp; escrita de artigo científico para periódico internacional \\ \hline</div><div class="clear"></div>
+<div class="linenb">415</div><div class="codeline">    13 &amp; redação do texto da tese \\ \hline</div><div class="clear"></div>
+<div class="linenb">416</div><div class="codeline">    14 &amp; defesa \\ \hline</div><div class="clear"></div>
+<div class="linenb">417</div><div class="codeline"><span class="keyword2">\end{tabular}</span></div><div class="clear"></div>
+<div class="linenb">418</div><div class="codeline">\fonte{Autores.}</div><div class="clear"></div>
+<div class="linenb">419</div><div class="codeline"><span class="keyword2">\end{<span class="highlight" title="Esta frase não começa com maiúscula.. Suggestions: [Quadro] (20604) [lt:pt:UPPERCASE_SENTENCE_START]"></span>quadro}</span></div><div class="clear"></div>
+<div class="linenb">420</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">421</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">422</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">423</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">424</div><div class="codeline"><span class="keyword1">\section</span>{Metodologia}</div><div class="clear"></div>
+<div class="linenb">425</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">426</div><div class="codeline">Apesar desta proposta almejar novos desenvolvimentos, a metodologia a ser seguida é a mesma que tem sido empregada pelo grupo de métodos numéricos do Departamento de Engenharia de Estruturas da Escola de Engenharia de São Carlos da Universidade de São Paulo, SET/EESC/USP. </div><div class="clear"></div>
+<div class="linenb">427</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">428</div><div class="codeline">As referências bibliográficas serão buscadas através do acesso às bases de dados, como Web of Science, Scopus e ScienceDirect, que fazem parte do Sistema Integrado de Bibliotecas (SIBi) da Universidade de São Paulo. </div><div class="clear"></div>
+<div class="linenb">429</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">430</div><div class="codeline">Os modelos a ser desenvolvidos neste projeto serão implementados em linguagem C++, com uso das bibliotecas e compiladores de código livre citados na \autoref{<span class="highlight" title="Em portugês formal, as palavras não contêm traço baixo (_), nem são separadas por traços. Verifique que a palavra 'sec_obj' está correta. (21270) [lt:pt:WORD_CONTAINS_UNDERSCORE]">sec_obj}</span>. Caso necessário, o <span class="keyword1">\textit</span>{<span class="highlight" title="Os estrangeirismos devem estar entre aspas ou ser italizados.. Suggestions: [‘cluster’, “cluster”] (21298) [lt:pt:BARBARISMS]">cluster}</span> que o grupo de métodos numéricos dispõe poderá ser usado para reduzir o tempo de processamento das análises. É importante citar que o orientador desta proposta possui uma versão implementação sequencial em linguagem FORTRAN para o modelo presente em \citeonline{Ferreira2024}. Esse código servirá de referência para os primeiros desenvolvimentos do código paralelizado em linguagem C++, agilizando a implementação e conferência dos primeiros resultados.</div><div class="clear"></div>
+<div class="linenb">431</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">432</div><div class="codeline">O responsável e o beneficiário avaliarão mensalmente o andamento do projeto visando verificar os prazos para execução das etapas previstas. </div><div class="clear"></div>
+<div class="linenb">433</div><div class="codeline">Pretende-se divulgar os resultados deste projeto <span class="highlight" title="Pode simplificar a parafrase empregando: 'por'.. Suggestions: [por] (21938) [lt:pt:ATRAVES_DE_POR]">através de</span> publicações em periódicos internacionais de alto impacto e, sendo possível, <span class="highlight" title="Pode simplificar a parafrase empregando: 'por'.. Suggestions: [por] (22025) [lt:pt:ATRAVES_DE_POR]">através de</span> artigos e apresentações em congressos.</div><div class="clear"></div>
+<div class="linenb">434</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">435</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">436</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">437</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">438</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">439</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">440</div><div class="codeline"><span class="keyword1">\section</span>{Cronograma}</div><div class="clear"></div>
+<div class="linenb">441</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">442</div><div class="codeline">A previsão dos prazos para execução das atividades listadas no \autoref{<span class="highlight" title="Em portugês formal, as palavras não contêm traço baixo (_), nem são separadas por traços. Verifique que a palavra 'tab_ativ' está correta. (22156) [lt:pt:WORD_CONTAINS_UNDERSCORE]">tab_ativ}</span> são apresentadas no cronograma abaixo.</div><div class="clear"></div>
+<div class="linenb">443</div><div class="codeline"><span class="keyword2">\begin{figure}</span>[htb!]</div><div class="clear"></div>
+<div class="linenb">444</div><div class="codeline">    \centering</div><div class="clear"></div>
+<div class="linenb">445</div><div class="codeline">    <span class="keyword1">\caption</span>{Cronograma previsto para execução das atividades listadas no \autoref{tab_ativ}.}</div><div class="clear"></div>
+<div class="linenb">446</div><div class="codeline">    <span class="keyword1">\includegraphics</span>[]{figs/cronograma.pdf}</div><div class="clear"></div>
+<div class="linenb">447</div><div class="codeline">    \fonte{Autores.}</div><div class="clear"></div>
+<div class="linenb">448</div><div class="codeline"><span class="highlight-sh" title="This figure is missing a label [sh:figref]">\</span>end{figure}</div><div class="clear"></div>
+<div class="linenb">449</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">450</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">451</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">452</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">453</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">454</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">455</div><div class="codeline"><span class="keyword1">\section</span>{Justificativa}</div><div class="clear"></div>
+<div class="linenb">456</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">457</div><div class="codeline">Listam-se, a seguir, quatro justificativas para a presente proposta.</div><div class="clear"></div>
+<div class="linenb">458</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">459</div><div class="codeline">A primeira é a contribuição às linhas de pesquisa em Métodos Numéricos e Mecânica dos Materiais ao incluir os tópicos <span class="keyword1">\textit</span>{modelos de campo de fase aplicados à Mecânica da Fratura} e <span class="keyword1">\textit</span>{Anisotropia}. Trata-se de assuntos muito pouco abordados em trabalhos do Programa de Pós-Graduação em Engenharia Civil (Estruturas) (PPGSET); especialmente quanto aos modelos de campo de fase, abordado em apenas uma tese de doutorado em andamento no programa.</div><div class="clear"></div>
+<div class="linenb">460</div><div class="codeline">Além da importância conceitual desses assuntos, o aprendizado e uso técnicas de programação paralela para computação científica de alto desempenho certamente contribuirão não apenas à formação do aluno desta proposta, mas também à construção de uma cultura de programação eficiente do PPGSET.</div><div class="clear"></div>
+<div class="linenb">461</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">462</div><div class="codeline">A segunda justificativa é a internacionalização da pesquisa a partir da colaboração com programa de pós-graduação em Engenharia Civil do Politecnico di Milano (Itália), que está entre os mais bem avaliados internacionalmente (em <span class="highlight" title="A abreviatura deste ordinal é: '12.ª'.. Suggestions: [12.ª] (23254) [lt:pt:ORDINAL_ABREVIATION]">12\textsuperscript{\underline{a}}</span> colocação, segundo o \href{https://www.topuniversities.com/university-subject-rankings/civil-structural-engineering}{<span class="keyword1">\textit</span>{QS World University <span class="highlight" title="'Rankings' é um estrangeirismo. É preferível dizer 'classificações'. Suggestions: [Classificações] (23299) [lt:pt:PT_BARBARISMS_REPLACE]">Rankings}</span> 2024}). No caso desta proposta, a colaboração se desenvolverá com o Prof. Umberto Perego, renomado internacionalmente no campo da Mecânica do <span class="highlight" title="Os gentílicos e línguas são escritos em minúsculas.. Suggestions: [dano] (23449) [lt:pt:GENTILICOS_LINGUAS]">Dano</span> e da Fratura, incluindo modelos de dano a gradiente e, mais recentemente, modelos de campo de fase. Além de contribuir à qualidade da pesquisa, pretende-se manter a colaboração iniciada com o Pós-Doutorado realizado pelo orientador desta proposta, assim como continuar com a cultura de colaborações internacionais do PPGSET.</div><div class="clear"></div>
+<div class="linenb">463</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">464</div><div class="codeline">A terceira justificativa é a atualidade dos temas abordados. Os modelos de campo de fase para a Mecânica da Fratura têm se mostrado como os mais promissores em trabalhos publicados em periódicos internacionais de alto impacto. Trata-se, portanto, de um assunto de muito interesse da comunidade científica internacional, e com um vasto campo para desenvolvimentos e melhoramentos.</div><div class="clear"></div>
+<div class="linenb">465</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">466</div><div class="codeline">Finalmente, ressalta-se o excelente perfil do aluno desta proposta<span class="highlight" title="Utilize a palavra capitalizada somente se estiver a iniciar uma frase ou a escrever nomes próprios.. Suggestions: [, eng, . Eng] (24227) [lt:pt:UPPERCASE_AFTER_COMMA]">, Eng</span>. Diego Dias Veloso, para atividades de pesquisa. Além de ter obtido excelente rendimento nas disciplinas obrigatórias do programa de mestrado e ao longo do curso de graduação, é muito responsável, dedicado e presente. O orientador desta proposta está certo que o aluno <span class="highlight" title="Em certos contextos, esta perífrase pode ser simplificada.. Suggestions: [consegue] (24502) [lt:pt:SER_CAPAZ_DE_CONSEGUIR]">é capaz de</span> concluir com êxito todas as atividades propostas em sua dissertação. </div><div class="clear"></div>
+<div class="linenb">467</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">468</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">469</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">470</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">471</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">472</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">473</div><div class="codeline"><span class="comment"><span class="comment">% Finaliza a parte no bookmark do PDF</span></span></div><div class="clear"></div>
+<div class="linenb">474</div><div class="codeline"><span class="comment"><span class="comment">% para que se inicie o bookmark na raiz</span></span></div><div class="clear"></div>
+<div class="linenb">475</div><div class="codeline"><span class="comment"><span class="comment">% e adiciona espaço de parte no Sumário</span></span></div><div class="clear"></div>
+<div class="linenb">476</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">477</div><div class="codeline">\phantompart</div><div class="clear"></div>
+<div class="linenb">478</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">479</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">480</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">481</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">482</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">483</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">484</div><div class="codeline"><span class="comment"><span class="comment">% Conclusão (opcional)</span></span></div><div class="clear"></div>
+<div class="linenb">485</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">486</div><div class="codeline"><span class="comment"><span class="comment">%\chapter*[Considerações finais]{Considerações finais}</span></span></div><div class="clear"></div>
+<div class="linenb">487</div><div class="codeline"><span class="comment"><span class="comment">%\addcontentsline{toc}{chapter}{Considerações finais}</span></span></div><div class="clear"></div>
+<div class="linenb">488</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">489</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">490</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">491</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">492</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">493</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">494</div><div class="codeline"><span class="comment"><span class="comment">% ELEMENTOS PÓS-TEXTUAIS</span></span></div><div class="clear"></div>
+<div class="linenb">495</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">496</div><div class="codeline">\postextual</div><div class="clear"></div>
+<div class="linenb">497</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">498</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">499</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">500</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">501</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">502</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">503</div><div class="codeline"><span class="comment"><span class="comment">% Referências bibliográficas (OBRIGATÓRIO)</span></span></div><div class="clear"></div>
+<div class="linenb">504</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">505</div><div class="codeline">\bibliography{/home/ayrton/references/papers,/home/ayrton/references/books}</div><div class="clear"></div>
+<div class="linenb">506</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">507</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">508</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">509</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">510</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">511</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">512</div><div class="codeline"><span class="comment"><span class="comment">% Glossário (opicional)</span></span></div><div class="clear"></div>
+<div class="linenb">513</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">514</div><div class="codeline"><span class="comment"><span class="comment">%</span></span></div><div class="clear"></div>
+<div class="linenb">515</div><div class="codeline"><span class="comment"><span class="comment">% Consulte o manual da classe abntex2 para orientações sobre o glossário.</span></span></div><div class="clear"></div>
+<div class="linenb">516</div><div class="codeline"><span class="comment"><span class="comment">%</span></span></div><div class="clear"></div>
+<div class="linenb">517</div><div class="codeline"><span class="comment"><span class="comment">%\glossary</span></span></div><div class="clear"></div>
+<div class="linenb">518</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">519</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">520</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">521</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">522</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">523</div><div class="codeline"><span class="comment"><span class="comment">% Apêndices (opicional)</span></span></div><div class="clear"></div>
+<div class="linenb">524</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">525</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">526</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">527</div><div class="codeline"><span class="comment"><span class="comment">% Inicia os apêndices</span></span></div><div class="clear"></div>
+<div class="linenb">528</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">529</div><div class="codeline"><span class="comment"><span class="comment">%<span class="keyword2">\begin{apendicesenv}</span></span></span></div><div class="clear"></div>
+<div class="linenb">530</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">531</div><div class="codeline"><span class="comment"><span class="comment">% Imprime uma página indicando o início dos apêndices</span></span></div><div class="clear"></div>
+<div class="linenb">532</div><div class="codeline"><span class="comment"><span class="comment">%\partapendices</span></span></div><div class="clear"></div>
+<div class="linenb">533</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">534</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">535</div><div class="codeline"><span class="comment"><span class="comment">%\chapter{Apêndice 1}</span></span></div><div class="clear"></div>
+<div class="linenb">536</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">537</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">538</div><div class="codeline"><span class="comment"><span class="comment">%<span class="keyword2">\end{apendicesenv}</span></span></span></div><div class="clear"></div>
+<div class="linenb">539</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">540</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">541</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">542</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">543</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">544</div><div class="codeline"><span class="comment"><span class="comment">% Anexos (opcional)</span></span></div><div class="clear"></div>
+<div class="linenb">545</div><div class="codeline"><span class="comment"><span class="comment">% ----------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">546</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">547</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">548</div><div class="codeline"><span class="comment"><span class="comment">% Inicia os anexos</span></span></div><div class="clear"></div>
+<div class="linenb">549</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">550</div><div class="codeline"><span class="comment"><span class="comment">%<span class="keyword2">\begin{anexosenv}</span></span></span></div><div class="clear"></div>
+<div class="linenb">551</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">552</div><div class="codeline"><span class="comment"><span class="comment">% Imprime uma página indicando o início dos anexos</span></span></div><div class="clear"></div>
+<div class="linenb">553</div><div class="codeline"><span class="comment"><span class="comment">%\partanexos</span></span></div><div class="clear"></div>
+<div class="linenb">554</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">555</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">556</div><div class="codeline"><span class="comment"><span class="comment">%\chapter{Anexo 1}</span></span></div><div class="clear"></div>
+<div class="linenb">557</div><div class="codeline"><span class="comment"><span class="comment">% ---</span></span></div><div class="clear"></div>
+<div class="linenb">558</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">559</div><div class="codeline"><span class="comment"><span class="comment">%<span class="keyword2">\end{anexosenv}</span></span></span></div><div class="clear"></div>
+<div class="linenb">560</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">561</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">562</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">563</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">564</div><div class="codeline"><span class="comment"><span class="comment">%---------------------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">565</div><div class="codeline"><span class="comment"><span class="comment">% INDICE REMISSIVO (opcional)</span></span></div><div class="clear"></div>
+<div class="linenb">566</div><div class="codeline"><span class="comment"><span class="comment">%---------------------------------------------------------------------</span></span></div><div class="clear"></div>
+<div class="linenb">567</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">568</div><div class="codeline"><span class="comment"><span class="comment">%\phantompart</span></span></div><div class="clear"></div>
+<div class="linenb">569</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">570</div><div class="codeline"><span class="comment"><span class="comment">%\printindex</span></span></div><div class="clear"></div>
+<div class="linenb">571</div><div class="codeline">&nbsp;</div><div class="clear"></div>
+<div class="linenb">572</div><div class="codeline"><span class="keyword2">\end{document}</span></div><div class="clear"></div>
+</div>
+<hr/>
+Output produced by TeXtidote v0.8.2, &copy; 2018-2020 Sylvain Hall&eacute; - All rights reserved.<br/>
+See the <a href="https://sylvainhalle.github.io/textidote">TeXtidote website</a> for more information.
+</body>
+</html>

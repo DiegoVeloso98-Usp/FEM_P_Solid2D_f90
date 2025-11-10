@@ -1,0 +1,36 @@
+\babel@toc {portuguese}{}\relax 
+\beamer@sectionintoc {1}{Metodologia}{3}{0}{1}
+\beamer@sectionintoc {2}{Desenvolvimento Teórico}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{Equilíbrio}{4}{0}{2}
+\beamer@subsectionintoc {2}{2}{Deformação}{5}{0}{2}
+\beamer@subsectionintoc {2}{3}{Determinação das Forças Internas}{21}{0}{2}
+\beamer@subsectionintoc {2}{4}{Determinação da Hessiana}{23}{0}{2}
+\beamer@subsectionintoc {2}{5}{Formulação Dinâmica}{28}{0}{2}
+\beamer@sectionintoc {3}{Resultados}{31}{0}{3}
+\beamer@subsectionintoc {3}{1}{Validação do Código Estático}{31}{0}{3}
+\beamer@subsectionintoc {3}{2}{Validação do Código Dinâmico}{40}{0}{3}
+\beamer@sectionintoc {4}{Modelo de Dano - Phase-Field}{49}{0}{4}
+\beamer@subsectionintoc {4}{1}{Formulação}{49}{0}{4}
+\beamer@subsectionintoc {4}{2}{Validação do Phase-Field}{57}{0}{4}
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 
+\babel@toc {portuguese}{}\relax 

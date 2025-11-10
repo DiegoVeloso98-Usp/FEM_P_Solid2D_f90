@@ -1,5 +1,5 @@
 # Geometrically non-linear FEM class
-## Work developed for the geometrically non-linear positional FEM formulation
+## Work developed for the geometrically non-linear positional FEM formulation for 2D solids course
 
 Non-Linear FEM code, written in fortran90. Based on the Positional Finite Element Method. Theres 2 different codes, one for the static analysis and other for the dynamical analysis. 
 
